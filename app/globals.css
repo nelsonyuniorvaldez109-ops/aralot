@@ -25,8 +25,6 @@ button { cursor: pointer; }
 .container { width: min(100%, 96rem); margin-inline: auto; padding-inline: var(--page-gutter); }
 .skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 10; padding: 0.75rem 1rem; background: var(--color-ink); color: var(--color-paper); transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
-.storefront-placeholder { padding-block: clamp(3rem, 8vw, 7rem); }
-.storefront-placeholder h1 { margin: 0; color: var(--color-muted); font-size: 0.9375rem; font-weight: 400; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
