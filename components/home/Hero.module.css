@@ -7,14 +7,15 @@
 .image {
   z-index: -2;
   object-fit: cover;
-  object-position: 72% center;
+  object-position: 72% 15%;
+  filter: grayscale(1);
 }
 .shade {
   position: absolute;
   inset: 0;
   z-index: -1;
   /* Neutral overlay keeps white text legible when the photograph is added. */
-  background: linear-gradient(90deg, rgb(0 0 0 / 82%) 0%, rgb(0 0 0 / 65%) 52%, rgb(0 0 0 / 8%) 100%);
+  background: linear-gradient(90deg, rgb(0 0 0 / 65%) 0%, rgb(0 0 0 / 40%) 48%, rgb(0 0 0 / 4%) 75%);
 }
 .inner {
   min-height: 78svh;
@@ -95,7 +96,7 @@
     font-size: clamp(3.5rem, 7.5vw, 5rem);
   }
   .image {
-    object-position: 65% center;
+    object-position: 78% top;
   }
 }
 @media (max-width: 37.499rem) {
@@ -131,9 +132,9 @@
     letter-spacing: 0.09em;
   }
   .image {
-    object-position: 68% center;
+    object-position: 73% top;
   }
   .shade {
-    background: linear-gradient(0deg, rgb(0 0 0 / 88%) 0%, rgb(0 0 0 / 68%) 65%, rgb(0 0 0 / 18%) 100%);
+    background: linear-gradient(0deg, rgb(0 0 0 / 92%) 0%, rgb(0 0 0 / 75%) 42%, rgb(0 0 0 / 8%) 75%);
   }
 }

@@ -15,7 +15,7 @@ export function Hero({ imageAlt }: HeroProps) {
           src="/images/hero/ara-lot-hero.webp"
           alt={imageAlt}
           fill
-          sizes="100vw"
+          sizes="(max-width: 1023px) max(100vw, 1024px, 178svh), max(100vw, 139svh)"
           preload
           className={styles.image}
         />
