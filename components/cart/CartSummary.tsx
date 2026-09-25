@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import styles from "./Cart.module.css";
 
 type CartSummaryProps = {
@@ -21,9 +22,9 @@ export function CartSummary({ subtotal }: CartSummaryProps) {
         <strong>{priceFormatter.format(subtotal)}</strong>
       </div>
       <p>Envío calculado en el checkout</p>
-      <button type="button" disabled aria-label="Continuar compra, próximamente">
+      <Link className={styles.summaryCheckout} href="/checkout">
         Continuar compra
-      </button>
+      </Link>
     </aside>
   );
 }
