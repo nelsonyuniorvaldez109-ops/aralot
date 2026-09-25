@@ -13,6 +13,12 @@
   background: #eeeeee;
 }
 
+.productLink {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
 .image,
 .placeholder {
   position: absolute;
@@ -26,8 +32,10 @@
   object-fit: cover;
 }
 
-.card:hover .image,
-.card:hover .placeholder {
+.productLink:hover .image,
+.productLink:hover .placeholder,
+.productLink:focus-visible .image,
+.productLink:focus-visible .placeholder {
   transform: scale(1.025);
 }
 
@@ -157,6 +165,18 @@
   font-size: clamp(0.95rem, 1.2vw, 1.1rem);
   font-weight: 650;
   line-height: 1.35;
+}
+
+.nameLink {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.25rem;
+  transition: text-decoration-color 180ms ease;
+}
+
+.nameLink:hover,
+.nameLink:focus-visible {
+  text-decoration-color: currentColor;
 }
 
 .prices {

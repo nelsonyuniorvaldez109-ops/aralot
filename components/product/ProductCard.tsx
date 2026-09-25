@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Product } from "@/data/products";
 import styles from "./ProductCard.module.css";
 
@@ -27,20 +28,26 @@ export function ProductCard({
   return (
     <article className={styles.card}>
       <div className={styles.media}>
-        {hasImage ? (
-          <Image
-            src={product.image}
-            alt={`${product.name}, producto de ARA LOT`}
-            fill
-            sizes="(max-width: 359px) 100vw, (max-width: 1199px) 50vw, 25vw"
-            className={styles.image}
-          />
-        ) : (
-          <div
-            className={`${styles.placeholder} ${styles[`placeholder${placeholderVariant}`]}`}
-            aria-hidden="true"
-          />
-        )}
+        <Link
+          className={styles.productLink}
+          href={`/productos/${product.slug}`}
+          aria-label={`Ver detalle de ${product.name}`}
+        >
+          {hasImage ? (
+            <Image
+              src={product.image}
+              alt={`${product.name}, producto de ARA LOT`}
+              fill
+              sizes="(max-width: 359px) 100vw, (max-width: 1199px) 50vw, 25vw"
+              className={styles.image}
+            />
+          ) : (
+            <div
+              className={`${styles.placeholder} ${styles[`placeholder${placeholderVariant}`]}`}
+              aria-hidden="true"
+            />
+          )}
+        </Link>
 
         {product.badge ? (
           <span className={styles.badge}>{product.badge}</span>
@@ -61,7 +68,11 @@ export function ProductCard({
 
       <div className={styles.content}>
         <p className={styles.category}>{product.category}</p>
-        <h3>{product.name}</h3>
+        <h3>
+          <Link className={styles.nameLink} href={`/productos/${product.slug}`}>
+            {product.name}
+          </Link>
+        </h3>
 
         <p
           className={styles.prices}

@@ -1,0 +1,45 @@
+.main {
+  padding-block: clamp(1.5rem, 3vw, 3rem) clamp(4.5rem, 9vw, 8rem);
+  background: var(--color-paper);
+}
+
+.breadcrumb {
+  margin-bottom: clamp(1.5rem, 3vw, 2.75rem);
+  color: var(--color-muted);
+  font-size: 0.6875rem;
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breadcrumb a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2rem;
+}
+
+.breadcrumb a:hover,
+.breadcrumb a:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.breadcrumb [aria-current="page"] {
+  color: var(--color-ink);
+}
+
+@media (max-width: 39.999rem) {
+  .main {
+    padding-top: 1.25rem;
+  }
+
+  .breadcrumb [aria-current="page"] {
+    width: 100%;
+  }
+}
