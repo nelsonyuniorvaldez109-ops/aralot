@@ -13,6 +13,8 @@
 .iconButton { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 0; background: transparent; transition: background-color 160ms ease; }
 .iconButton:hover { background: var(--color-soft); }
 .iconButton svg { width: 1.25rem; height: 1.25rem; flex: none; }
+.cartButton { position: relative; }
+.cartCount { position: absolute; top: 0.15rem; right: 0.05rem; display: grid; min-width: 1.15rem; height: 1.15rem; padding-inline: 0.25rem; place-items: center; border-radius: 999px; background: var(--color-ink); color: var(--color-paper); font-size: 0.5625rem; font-weight: 700; line-height: 1; }
 .menuToggle, .mobileNavigation { display: none; }
 @media (max-width: 74.999rem) {
   .headerInner { min-height: 5.25rem; grid-template-columns: 2.75rem 1fr auto; gap: 1rem; }

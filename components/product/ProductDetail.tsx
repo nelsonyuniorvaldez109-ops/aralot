@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useCart } from "@/components/cart/CartProvider";
 import type { Product } from "@/data/products";
 import styles from "./ProductDetail.module.css";
 
@@ -22,6 +23,7 @@ export function ProductDetail({
   hasImage,
   placeholderVariant,
 }: ProductDetailProps) {
+  const { addItem, ready } = useCart();
   const [selectedColor, setSelectedColor] = useState<string>();
   const [selectedSize, setSelectedSize] = useState<string>();
   const [quantity, setQuantity] = useState(1);
@@ -44,9 +46,19 @@ export function ProductDetail({
       return;
     }
 
-    setFeedback(
-      `Selección lista: ${quantity} ${quantity === 1 ? "unidad" : "unidades"}. El carrito estará disponible próximamente.`,
-    );
+    addItem({
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      image: product.image,
+      imageAvailable: hasImage,
+      price: product.price,
+      quantity,
+      selectedColor,
+      selectedSize,
+      presentation: product.presentation,
+    });
+    setFeedback("Producto agregado al carrito");
   }
 
   return (
@@ -168,7 +180,12 @@ export function ProductDetail({
             </button>
           </div>
 
-          <button className={styles.addButton} type="button" onClick={handleAddToCart}>
+          <button
+            className={styles.addButton}
+            type="button"
+            disabled={!ready}
+            onClick={handleAddToCart}
+          >
             Agregar al carrito
           </button>
 

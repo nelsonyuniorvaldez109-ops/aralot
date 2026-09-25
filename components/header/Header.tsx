@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCart } from "@/components/cart/CartProvider";
 import { DesktopNavigation } from "./DesktopNavigation";
 import { MobileNavigation } from "./MobileNavigation";
 import styles from "./Header.module.css";
@@ -14,6 +15,7 @@ const actions: { label: string; compact?: boolean; icon: ReactNode }[] = [
 ];
 
 export function Header() {
+  const { ready, totalUnits } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
 
@@ -56,11 +58,38 @@ export function Header() {
         <Link href="/" className={styles.wordmark} aria-label="ARA LOT — Inicio">ARA LOT</Link>
         <DesktopNavigation />
         <div className={styles.actions} role="group" aria-label="Acciones de la tienda">
-          {actions.map(({ label, compact, icon }) => (
-            <button key={label} type="button" className={`${styles.iconButton} ${compact ? styles.secondaryAction : ""}`} aria-label={label} aria-disabled="true" title={`${label} — Próximamente`}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icon}</svg>
-            </button>
-          ))}
+          {actions.map(({ label, compact, icon }) => {
+            const className = `${styles.iconButton} ${compact ? styles.secondaryAction : ""}`;
+
+            if (label === "Carrito") {
+              return (
+                <Link
+                  key={label}
+                  href="/carrito"
+                  className={`${className} ${styles.cartButton}`}
+                  aria-label={
+                    ready && totalUnits > 0
+                      ? `Carrito, ${totalUnits} ${totalUnits === 1 ? "unidad" : "unidades"}`
+                      : "Carrito"
+                  }
+                  title="Ver carrito"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icon}</svg>
+                  {ready && totalUnits > 0 ? (
+                    <span className={styles.cartCount} aria-hidden="true">
+                      {totalUnits}
+                    </span>
+                  ) : null}
+                </Link>
+              );
+            }
+
+            return (
+              <button key={label} type="button" className={className} aria-label={label} aria-disabled="true" title={`${label} — Próximamente`}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icon}</svg>
+              </button>
+            );
+          })}
         </div>
       </div>
       <MobileNavigation open={menuOpen} onNavigate={closeMenu} />

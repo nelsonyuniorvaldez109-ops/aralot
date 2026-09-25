@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { AnnouncementBar } from "@/components/header/AnnouncementBar";
+import { CartProvider } from "@/components/cart/CartProvider";
 import { Header } from "@/components/header/Header";
 import "./globals.css";
 
@@ -17,8 +18,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <a className="skip-link" href="#storefront">Saltar al contenido</a>
         <AnnouncementBar />
-        <Header />
-        {children}
+        <CartProvider>
+          <Header />
+          {children}
+        </CartProvider>
       </body>
     </html>
   );
