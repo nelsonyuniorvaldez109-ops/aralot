@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useCart } from "@/components/cart/CartProvider";
+import { useFavorites } from "@/components/favorites/FavoritesProvider";
+import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { DesktopNavigation } from "./DesktopNavigation";
 import { MobileNavigation } from "./MobileNavigation";
 import styles from "./Header.module.css";
@@ -16,8 +18,14 @@ const actions: { label: string; compact?: boolean; icon: ReactNode }[] = [
 
 export function Header() {
   const { ready, totalUnits } = useCart();
+  const {
+    favoriteCount,
+    ready: favoritesReady,
+  } = useFavorites();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const searchButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 75rem)");
@@ -32,6 +40,11 @@ export function Header() {
     setMenuOpen(false);
     menuButton.current?.focus();
   }
+
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false);
+    window.requestAnimationFrame(() => searchButton.current?.focus());
+  }, []);
 
   return (
     <header className={styles.header} onKeyDown={(event) => {
@@ -60,6 +73,49 @@ export function Header() {
         <div className={styles.actions} role="group" aria-label="Acciones de la tienda">
           {actions.map(({ label, compact, icon }) => {
             const className = `${styles.iconButton} ${compact ? styles.secondaryAction : ""}`;
+
+            if (label === "Buscar") {
+              return (
+                <button
+                  ref={searchButton}
+                  key={label}
+                  type="button"
+                  className={className}
+                  aria-label="Buscar productos"
+                  aria-expanded={searchOpen}
+                  aria-controls="product-search-overlay"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setSearchOpen(true);
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icon}</svg>
+                </button>
+              );
+            }
+
+            if (label === "Favoritos") {
+              return (
+                <Link
+                  key={label}
+                  href="/favoritos"
+                  className={`${className} ${styles.favoriteLink}`}
+                  aria-label={
+                    favoritesReady && favoriteCount > 0
+                      ? `Favoritos, ${favoriteCount} ${favoriteCount === 1 ? "producto" : "productos"}`
+                      : "Favoritos"
+                  }
+                  title="Ver favoritos"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icon}</svg>
+                  {favoritesReady && favoriteCount > 0 ? (
+                    <span className={styles.cartCount} aria-hidden="true">
+                      {favoriteCount}
+                    </span>
+                  ) : null}
+                </Link>
+              );
+            }
 
             if (label === "Carrito") {
               return (
@@ -93,6 +149,7 @@ export function Header() {
         </div>
       </div>
       <MobileNavigation open={menuOpen} onNavigate={closeMenu} />
+      {searchOpen ? <SearchOverlay onClose={closeSearch} /> : null}
     </header>
   );
 }

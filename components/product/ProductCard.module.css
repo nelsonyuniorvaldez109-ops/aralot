@@ -138,6 +138,10 @@
   stroke-width: 1.5;
 }
 
+.favorite[aria-pressed="true"] svg {
+  fill: currentColor;
+}
+
 .favorite:hover,
 .favorite:focus-visible {
   background: var(--color-ink);

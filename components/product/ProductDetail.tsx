@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
+import { useFavorites } from "@/components/favorites/FavoritesProvider";
 import type { Product } from "@/data/products";
 import styles from "./ProductDetail.module.css";
 
@@ -23,12 +24,17 @@ export function ProductDetail({
   hasImage,
   placeholderVariant,
 }: ProductDetailProps) {
-  const { addItem, ready } = useCart();
+  const { addItem, ready: cartReady } = useCart();
+  const {
+    isFavorite,
+    ready: favoritesReady,
+    toggleFavorite,
+  } = useFavorites();
   const [selectedColor, setSelectedColor] = useState<string>();
   const [selectedSize, setSelectedSize] = useState<string>();
   const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const favorite = isFavorite(product.id);
 
   const price = priceFormatter.format(product.price);
   const compareAtPrice = product.compareAtPrice
@@ -183,7 +189,7 @@ export function ProductDetail({
           <button
             className={styles.addButton}
             type="button"
-            disabled={!ready}
+            disabled={!cartReady}
             onClick={handleAddToCart}
           >
             Agregar al carrito
@@ -193,12 +199,13 @@ export function ProductDetail({
             className={styles.favoriteButton}
             type="button"
             aria-label={
-              isFavorite
+              favorite
                 ? `Quitar ${product.name} de favoritos`
                 : `Agregar ${product.name} a favoritos`
             }
-            aria-pressed={isFavorite}
-            onClick={() => setIsFavorite((current) => !current)}
+            disabled={!favoritesReady}
+            aria-pressed={favorite}
+            onClick={() => toggleFavorite(product.id)}
           >
             <svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="M20.8 4.8a5.4 5.4 0 0 0-7.6 0L12 6l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.6a5.4 5.4 0 0 0 0-7.6Z" />

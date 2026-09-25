@@ -22,7 +22,7 @@ export function MobileNavigation({ open, onNavigate }: MobileNavigationProps) {
         </ul>
         <div className={styles.mobileAccountActions}>
           <button type="button" aria-disabled="true" title="Próximamente">Mi cuenta</button>
-          <button type="button" aria-disabled="true" title="Próximamente">Favoritos</button>
+          <Link href="/favoritos" onClick={onNavigate}>Favoritos</Link>
         </div>
         <p className={styles.mobileSupport}>ATENCIÓN POR WHATSAPP</p>
       </div>

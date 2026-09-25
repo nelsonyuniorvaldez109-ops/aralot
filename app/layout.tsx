@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { AnnouncementBar } from "@/components/header/AnnouncementBar";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { FavoritesProvider } from "@/components/favorites/FavoritesProvider";
 import { Header } from "@/components/header/Header";
 import "./globals.css";
 
@@ -19,8 +20,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip-link" href="#storefront">Saltar al contenido</a>
         <AnnouncementBar />
         <CartProvider>
-          <Header />
-          {children}
+          <FavoritesProvider>
+            <Header />
+            {children}
+          </FavoritesProvider>
         </CartProvider>
       </body>
     </html>

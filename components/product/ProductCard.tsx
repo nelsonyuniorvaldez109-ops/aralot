@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useFavorites } from "@/components/favorites/FavoritesProvider";
 import type { Product } from "@/data/products";
 import styles from "./ProductCard.module.css";
 
@@ -20,6 +23,8 @@ export function ProductCard({
   hasImage,
   placeholderVariant,
 }: ProductCardProps) {
+  const { isFavorite, ready, toggleFavorite } = useFavorites();
+  const favorite = isFavorite(product.id);
   const price = priceFormatter.format(product.price);
   const compareAtPrice = product.compareAtPrice
     ? priceFormatter.format(product.compareAtPrice)
@@ -56,9 +61,14 @@ export function ProductCard({
         <button
           className={styles.favorite}
           type="button"
-          aria-label={`Agregar ${product.name} a favoritos (próximamente)`}
-          aria-disabled="true"
-          title="Favoritos próximamente"
+          disabled={!ready}
+          aria-label={
+            favorite
+              ? `Quitar ${product.name} de favoritos`
+              : `Agregar ${product.name} a favoritos`
+          }
+          aria-pressed={favorite}
+          onClick={() => toggleFavorite(product.id)}
         >
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="M20.8 4.8a5.4 5.4 0 0 0-7.6 0L12 6l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.6a5.4 5.4 0 0 0 0-7.6Z" />
