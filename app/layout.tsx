@@ -3,6 +3,7 @@ import { Manrope } from "next/font/google";
 import { AnnouncementBar } from "@/components/header/AnnouncementBar";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { FavoritesProvider } from "@/components/favorites/FavoritesProvider";
+import { SiteFooter } from "@/components/footer/SiteFooter";
 import { Header } from "@/components/header/Header";
 import "./globals.css";
 
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <FavoritesProvider>
             <Header />
             {children}
+            <SiteFooter />
           </FavoritesProvider>
         </CartProvider>
       </body>

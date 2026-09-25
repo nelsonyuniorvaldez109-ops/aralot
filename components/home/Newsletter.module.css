@@ -1,0 +1,122 @@
+.section {
+  padding-block: clamp(4rem, 8vw, 7rem);
+  background: var(--color-soft);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 1.1fr);
+  gap: clamp(2.5rem, 8vw, 9rem);
+  align-items: end;
+}
+
+.intro p {
+  margin: 0 0 0.9rem;
+  color: var(--color-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.intro h2 {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.intro span {
+  display: block;
+  max-width: 34rem;
+  margin-top: 1.25rem;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  border-bottom: 1px solid var(--color-ink);
+}
+
+.controls input {
+  min-width: 0;
+  min-height: 3.75rem;
+  padding: 0.75rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.controls input:focus {
+  outline-offset: -2px;
+}
+
+.controls input::placeholder {
+  color: #858585;
+}
+
+.controls button {
+  min-height: 3.75rem;
+  padding: 0 0.25rem 0 1.5rem;
+  border: 0;
+  background: transparent;
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.controls button:hover,
+.controls button:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.35rem;
+}
+
+.message {
+  min-height: 1.25rem;
+  margin: 0.65rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+}
+
+.error {
+  color: var(--color-ink);
+  font-weight: 650;
+}
+
+@media (max-width: 55.999rem) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 31.999rem) {
+  .controls {
+    grid-template-columns: 1fr;
+    border-bottom: 0;
+  }
+
+  .controls input {
+    border-bottom: 1px solid var(--color-ink);
+  }
+
+  .controls button {
+    margin-top: 1rem;
+    padding-inline: 1rem;
+    border: 1px solid var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+}

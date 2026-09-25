@@ -1,0 +1,157 @@
+.section {
+  padding-block: clamp(4rem, 8vw, 7rem);
+  background: var(--color-paper);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.banner {
+  position: relative;
+  display: flex;
+  min-height: clamp(28rem, 44vw, 42rem);
+  align-items: flex-end;
+  overflow: hidden;
+  background: #171717;
+  color: var(--color-paper);
+  isolation: isolate;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #1b1b1b;
+  transition: transform 600ms cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.placeholder::before,
+.placeholder::after {
+  content: "";
+  position: absolute;
+  border: 1px solid #414141;
+}
+
+.placeholder::before {
+  top: 11%;
+  right: 8%;
+  width: 48%;
+  height: 62%;
+  background: #242424;
+}
+
+.placeholder::after {
+  top: 20%;
+  right: 20%;
+  width: 34%;
+  height: 58%;
+}
+
+.placeholder2 {
+  background: #292929;
+}
+
+.placeholder2::before {
+  top: 13%;
+  right: 13%;
+  width: 30%;
+  height: 48%;
+  border-radius: 45% 45% 8% 8%;
+  background: #353535;
+}
+
+.placeholder2::after {
+  top: 31%;
+  right: 35%;
+  width: 20%;
+  height: 39%;
+  background: #202020;
+}
+
+.banner:hover .placeholder {
+  transform: scale(1.02);
+}
+
+.content {
+  width: min(100%, 34rem);
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: #c8c8c8;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.content h3 {
+  max-width: 12ch;
+  margin: 0;
+  font-size: clamp(2rem, 4.3vw, 4.25rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.description {
+  max-width: 28rem;
+  margin: 1.25rem 0 0;
+  color: #d0d0d0;
+  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid currentColor;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.cta span {
+  transition: transform 180ms ease;
+}
+
+.cta:hover span,
+.cta:focus-visible span {
+  transform: translateX(0.2rem);
+}
+
+@media (max-width: 47.999rem) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .banner {
+    min-height: clamp(26rem, 120vw, 36rem);
+  }
+}
+
+@media (max-width: 22.499rem) {
+  .content {
+    padding: 1.5rem;
+  }
+
+  .content h3 {
+    font-size: 2rem;
+  }
+}
