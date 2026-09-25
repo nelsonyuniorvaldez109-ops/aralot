@@ -18,10 +18,10 @@ const categories = [
     alt: "Productos de cuidado personal para hombre",
   },
   {
-    name: "MARCAS",
-    cta: "Ver marcas",
-    image: "/images/categories/brands.webp",
-    alt: "Selección de marcas disponibles en ARA LOT",
+    name: "NUEVA COLECCIÓN",
+    cta: "Descubrir",
+    image: "/images/categories/new-collection.webp",
+    alt: "Nueva colección de ARA LOT para hombre",
   },
   {
     name: "COMBOS",
