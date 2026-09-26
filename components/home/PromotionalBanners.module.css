@@ -155,3 +155,10 @@
     font-size: 2rem;
   }
 }
+
+.banner { flex-direction: column; align-items: stretch; }
+.media { position: relative; width: 100%; aspect-ratio: 1.85; overflow: hidden; }
+.image { object-fit: cover; transition: transform 500ms ease; }
+.banner:hover .image { transform: scale(1.025); }
+.content { width: 100%; flex: 1; padding: clamp(1.5rem, 3vw, 3rem); }
+.content h3 { max-width: 18ch; font-size: clamp(2rem, 3vw, 3.25rem); }

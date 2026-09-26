@@ -1,9 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./PromotionalBanners.module.css";
 
 const banners = [
   {
     eyebrow: "NUEVOS POLOCHES",
+    image: "/images/banners/poloches.webp",
+    alt: "Hombre con poloche negro ARA LOT",
     title: "ESTILO PARA CADA MOMENTO",
     description: "Descubre la colección de ARA LOT para el hombre de hoy.",
     cta: "VER COLECCIÓN",
@@ -11,6 +14,8 @@ const banners = [
   },
   {
     eyebrow: "CUIDADO PERSONAL",
+    image: "/images/banners/personal-care.webp",
+    alt: "Productos de cuidado personal ARA LOT",
     title: "CUIDA TU ESTILO",
     description: "Shampoo, gelatina y cuidado personal ARA LOT.",
     cta: "VER PRODUCTOS",
@@ -25,12 +30,9 @@ export function PromotionalBanners() {
         Colecciones destacadas
       </h2>
       <div className={`${styles.grid} container`}>
-        {banners.map((banner, index) => (
+        {banners.map((banner) => (
           <article className={styles.banner} key={banner.eyebrow}>
-            <div
-              className={`${styles.placeholder} ${styles[`placeholder${index + 1}`]}`}
-              aria-hidden="true"
-            />
+            <div className={styles.media}><Image src={banner.image} alt={banner.alt} fill sizes="(max-width: 767px) 100vw, 50vw" className={styles.image} /></div>
             <div className={styles.content}>
               <p className={styles.eyebrow}>{banner.eyebrow}</p>
               <h3>{banner.title}</h3>
