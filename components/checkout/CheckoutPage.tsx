@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useCart } from "@/components/cart/CartProvider";
+import { WHATSAPP_NUMBER } from "@/lib/store-config";
+import { buildWhatsAppUrl } from "@/lib/whatsapp-order";
 import { OrderSummary } from "./OrderSummary";
 import styles from "./Checkout.module.css";
 
 type DeliveryMethod = "" | "delivery" | "pickup";
-type PaymentMethod = "" | "cash" | "transfer";
 type CheckoutField =
   | "firstName"
   | "lastName"
@@ -17,8 +18,7 @@ type CheckoutField =
   | "municipality"
   | "sector"
   | "address"
-  | "deliveryMethod"
-  | "paymentMethod";
+  | "deliveryMethod";
 type CheckoutErrors = Partial<Record<CheckoutField, string>>;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,9 +38,8 @@ function getValue(formData: FormData, name: string) {
 export function CheckoutPage() {
   const { items, ready, subtotal } = useCart();
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("");
   const [errors, setErrors] = useState<CheckoutErrors>({});
-  const [prepared, setPrepared] = useState(false);
+  const [feedback, setFeedback] = useState("");
 
   function clearError(field: CheckoutField) {
     setErrors((current) => {
@@ -49,7 +48,7 @@ export function CheckoutPage() {
       delete next[field];
       return next;
     });
-    setPrepared(false);
+    setFeedback("");
   }
 
   function focusFirstInvalid(form: HTMLFormElement, field: CheckoutField) {
@@ -71,24 +70,47 @@ export function CheckoutPage() {
     const email = getValue(formData, "email");
     if (!emailPattern.test(email)) nextErrors.email = "Ingresa un correo válido.";
 
-    if (!getValue(formData, "phone")) nextErrors.phone = "Ingresa tu teléfono.";
+    const phone = getValue(formData, "phone");
+    const phoneDigits = phone.replace(/\D/g, "");
+    if (!/^[+\d\s().-]+$/.test(phone) || phoneDigits.length < 10 || phoneDigits.length > 15) {
+      nextErrors.phone = "Ingresa un teléfono válido con código de área.";
+    }
     if (!getValue(formData, "province")) nextErrors.province = "Ingresa tu provincia.";
     if (!getValue(formData, "municipality")) nextErrors.municipality = "Ingresa tu municipio.";
     if (!getValue(formData, "sector")) nextErrors.sector = "Ingresa tu sector.";
     if (!getValue(formData, "address")) nextErrors.address = "Ingresa tu dirección.";
     if (!deliveryMethod) nextErrors.deliveryMethod = "Selecciona un método de entrega.";
-    if (!paymentMethod) nextErrors.paymentMethod = "Selecciona un método de pago.";
 
     setErrors(nextErrors);
 
     const firstInvalid = Object.keys(nextErrors)[0] as CheckoutField | undefined;
     if (firstInvalid) {
-      setPrepared(false);
+      setFeedback("");
       focusFirstInvalid(form, firstInvalid);
       return;
     }
 
-    setPrepared(true);
+    if (!ready || items.length === 0) return;
+
+    const url = buildWhatsAppUrl(WHATSAPP_NUMBER, items, {
+      name: `${getValue(formData, "firstName")} ${getValue(formData, "lastName")}`,
+      phone,
+      email,
+      province: getValue(formData, "province"),
+      city: getValue(formData, "municipality"),
+      sector: getValue(formData, "sector"),
+      address: getValue(formData, "address"),
+      reference: getValue(formData, "reference"),
+      deliveryMethod: deliveryMethod === "pickup" ? "Recoger" : "Delivery",
+    });
+
+    if (!url) {
+      setFeedback("El pedido por WhatsApp estará disponible cuando configuremos el número oficial de ARA LOT. Tu carrito se conserva.");
+      return;
+    }
+
+    // Same-tab navigation avoids popup blockers. Cart persistence remains untouched.
+    window.location.assign(url);
   }
 
   if (!ready) {
@@ -214,7 +236,7 @@ export function CheckoutPage() {
               </div>
 
               <div className={styles.field}>
-                <label htmlFor="municipality">Municipio</label>
+                <label htmlFor="municipality">Ciudad / Municipio</label>
                 <input
                   id="municipality"
                   name="municipality"
@@ -262,7 +284,7 @@ export function CheckoutPage() {
                 <label htmlFor="reference">
                   Referencia <span>Opcional</span>
                 </label>
-                <textarea id="reference" name="reference" rows={3} />
+                <textarea id="reference" name="reference" rows={3} onChange={() => setFeedback("")} />
               </div>
             </div>
           </section>
@@ -323,70 +345,17 @@ export function CheckoutPage() {
             ) : null}
           </fieldset>
 
-          <fieldset
-            className={styles.formSection}
-            aria-invalid={Boolean(errors.paymentMethod)}
-            aria-describedby={errors.paymentMethod ? "paymentMethod-error" : undefined}
-          >
-            <legend className={styles.sectionHeading}>
-              <span>04</span>
-              <strong>Método de pago</strong>
-            </legend>
-
-            <div className={styles.methodGrid}>
-              <label className={styles.method}>
-                <input
-                  name="paymentMethod"
-                  type="radio"
-                  value="cash"
-                  checked={paymentMethod === "cash"}
-                  onChange={() => {
-                    setPaymentMethod("cash");
-                    clearError("paymentMethod");
-                  }}
-                />
-                <span>
-                  <strong>Efectivo contra entrega</strong>
-                  <small>Pago al recibir el pedido.</small>
-                </span>
-              </label>
-
-              <label className={styles.method}>
-                <input
-                  name="paymentMethod"
-                  type="radio"
-                  value="transfer"
-                  checked={paymentMethod === "transfer"}
-                  onChange={() => {
-                    setPaymentMethod("transfer");
-                    clearError("paymentMethod");
-                  }}
-                />
-                <span>
-                  <strong>Transferencia bancaria</strong>
-                  <small>Datos disponibles posteriormente.</small>
-                </span>
-              </label>
-            </div>
-
-            <FieldError id="paymentMethod-error" message={errors.paymentMethod} />
-          </fieldset>
-
           <button className={styles.submitButton} type="submit">
-            Confirmar pedido
+            FINALIZAR PEDIDO POR WHATSAPP
           </button>
 
           <p className={styles.privacy}>
             Utilizaremos tus datos únicamente para gestionar tu pedido.
           </p>
 
-          {prepared ? (
+          {feedback ? (
             <div className={styles.confirmation} role="status" aria-live="polite">
-              <strong>Checkout preparado correctamente.</strong>
-              <p>
-                El procesamiento definitivo del pedido se habilitará cuando conectemos el
-                sistema de pedidos.
-              </p>
+              <p>{feedback}</p>
             </div>
           ) : null}
         </form>

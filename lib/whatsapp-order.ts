@@ -1,0 +1,53 @@
+import type { CartItem } from "@/components/cart/CartProvider";
+
+type CustomerDetails = {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  sector: string;
+  city: string;
+  province: string;
+  reference: string;
+  deliveryMethod: string;
+};
+
+const amount = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
+const price = (value: number) => `RD$${amount.format(value)}`;
+
+export function buildWhatsAppUrl(
+  number: string,
+  items: CartItem[],
+  customer: CustomerDetails,
+): string | null {
+  if (!/^[1-9]\d{7,14}$/.test(number) || items.length === 0) return null;
+
+  const products = items.map((item, index) => [
+    `${index + 1}. ${item.name}`,
+    item.selectedSize && `Talla: ${item.selectedSize}`,
+    item.selectedColor && `Color: ${item.selectedColor}`,
+    item.presentation && `Presentación: ${item.presentation}`,
+    `Cantidad: ${item.quantity}`,
+    `Subtotal: ${price(item.price * item.quantity)}`,
+  ].filter(Boolean).join("\n")).join("\n\n");
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const message = [
+    "Hola, quiero realizar el siguiente pedido:",
+    "", "PEDIDO", "--------------------", "", products, "",
+    "--------------------",
+    `TOTAL PROVISIONAL: ${price(total)}`,
+    "Entrega no incluida; por confirmar.",
+    "", "DATOS DEL CLIENTE", "",
+    `Nombre: ${customer.name}`,
+    `Teléfono: ${customer.phone}`,
+    `Correo: ${customer.email}`,
+    `Dirección: ${customer.address}`,
+    `Sector: ${customer.sector}`,
+    `Ciudad: ${customer.city}`,
+    `Provincia: ${customer.province}`,
+    `Referencia: ${customer.reference || "No indicada"}`,
+    `Método de entrega: ${customer.deliveryMethod}`,
+  ].join("\n");
+
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}

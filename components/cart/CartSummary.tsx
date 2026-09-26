@@ -21,7 +21,7 @@ export function CartSummary({ subtotal }: CartSummaryProps) {
         <span>Subtotal</span>
         <strong>{priceFormatter.format(subtotal)}</strong>
       </div>
-      <p>Envío calculado en el checkout</p>
+      <p>El costo de entrega se coordina al procesar tu pedido.</p>
       <Link className={styles.summaryCheckout} href="/checkout">
         Continuar compra
       </Link>
