@@ -1,0 +1,9 @@
+.page { padding-block: clamp(3rem, 6vw, 6rem); }
+.heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1.5rem; margin-bottom: 2.5rem; }
+.heading h1 { margin: 0; font-size: var(--text-h2); line-height: var(--leading-heading); font-weight: var(--weight-semibold); }
+.heading a { font-size: var(--text-control); text-underline-offset: .3em; }
+.heading a:hover { text-decoration: underline; }
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.5rem 1.5rem; }
+.empty { margin: 0; padding-block: 2rem; font-size: var(--text-body); line-height: var(--leading-body); }
+@media (max-width: 74.999rem) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 22.499rem) { .grid { grid-template-columns: minmax(0, 1fr); } }

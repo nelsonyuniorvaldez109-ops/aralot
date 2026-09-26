@@ -77,7 +77,6 @@ export function ProductCard({
       </div>
 
       <div className={styles.content}>
-        <p className={styles.category}>{product.category}</p>
         <h3>
           <Link className={styles.nameLink} href={`/productos/${product.slug}`}>
             {product.name}
@@ -98,45 +97,6 @@ export function ProductCard({
           <span aria-hidden="true">{price}</span>
         </p>
 
-        <div className={styles.details}>
-          {product.colors ? (
-            <div className={styles.detailRow}>
-              <span>Colores</span>
-              <ul aria-label="Colores disponibles">
-                {product.colors.map((color) => (
-                  <li key={color}>{color}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          {product.sizes ? (
-            <div className={styles.detailRow}>
-              <span>Tallas</span>
-              <ul aria-label="Tallas disponibles">
-                {product.sizes.map((size) => (
-                  <li key={size}>{size}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          {product.presentation ? (
-            <p className={styles.presentation}>
-              <span>Presentación</span> {product.presentation}
-            </p>
-          ) : null}
-        </div>
-
-        <button
-          className={styles.addButton}
-          type="button"
-          aria-disabled="true"
-          aria-label={`Agregar ${product.name} al carrito (próximamente)`}
-          title="Carrito próximamente"
-        >
-          Agregar al carrito
-        </button>
       </div>
     </article>
   );

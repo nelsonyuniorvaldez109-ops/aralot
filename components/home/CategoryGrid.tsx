@@ -9,24 +9,28 @@ const categories = [
     name: "POLOCHES",
     cta: "Ver colección",
     image: "/images/categories/poloches.webp",
+    href: "/productos?categoria=poloches",
     alt: "Selección de poloches para hombre",
   },
   {
     name: "CUIDADO PERSONAL",
     cta: "Ver productos",
     image: "/images/categories/personal-care.webp",
+    href: "/productos?categoria=cuidado-personal",
     alt: "Productos de cuidado personal para hombre",
   },
   {
     name: "NUEVA COLECCIÓN",
     cta: "Descubrir",
     image: "/images/categories/new-collection.webp",
+    href: "/productos?categoria=nueva-coleccion",
     alt: "Nueva colección de ARA LOT para hombre",
   },
   {
     name: "COMBOS",
     cta: "Ver ofertas",
     image: "/images/categories/combos.webp",
+    href: "/productos?categoria=combos",
     alt: "Combos de ropa y cuidado personal para hombre",
   },
 ] as const;
@@ -50,7 +54,7 @@ export function CategoryGrid() {
               <article className={styles.card} key={category.name}>
                 <Link
                   className={styles.link}
-                  href="#categories-title"
+                  href={category.href}
                   aria-label={`${category.cta}: ${category.name.toLocaleLowerCase("es")}`}
                 >
                   <div className={styles.media}>

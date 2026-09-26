@@ -1,8 +1,15 @@
+export const productCategories = {
+  poloches: "Poloches",
+  "cuidado-personal": "Cuidado Personal",
+  "nueva-coleccion": "Nueva Colección",
+  combos: "Combos",
+} as const;
+
 export type Product = {
   id: string;
   slug: string;
   name: string;
-  category: "Poloches" | "Cuidado Personal";
+  category: (typeof productCategories)[keyof typeof productCategories];
   description: string;
   price: number;
   compareAtPrice?: number;
