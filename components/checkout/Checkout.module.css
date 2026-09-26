@@ -11,16 +11,16 @@
 .eyebrow {
   margin: 0 0 0.8rem;
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .heading h1,
 .empty h1 {
   margin: 0;
   font-size: clamp(2.25rem, 5vw, 4.5rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   line-height: 1;
   letter-spacing: -0.055em;
   text-transform: uppercase;
@@ -29,7 +29,7 @@
 .heading > p:last-child {
   margin: 1rem 0 0;
   color: var(--color-muted);
-  font-size: 0.85rem;
+  font-size: var(--text-secondary);
 }
 
 .layout {
@@ -62,16 +62,16 @@
 
 .sectionHeading > span {
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .sectionHeading h2,
 .sectionHeading strong {
   margin: 0;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
@@ -95,13 +95,13 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.45rem;
-  font-size: 0.7rem;
-  font-weight: 650;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .field label span {
   color: var(--color-muted);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 
 .field input,
@@ -114,7 +114,7 @@
   background: var(--color-paper);
   color: var(--color-ink);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--text-secondary);
   resize: vertical;
 }
 
@@ -131,8 +131,8 @@
 .error {
   margin: 0.45rem 0 0;
   color: var(--color-ink);
-  font-size: 0.6875rem;
-  font-weight: 650;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .methodGrid {
@@ -179,14 +179,14 @@
 }
 
 .method strong {
-  font-size: 0.75rem;
+  font-size: var(--text-secondary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .method small {
   color: var(--color-muted);
-  font-size: 0.7rem;
+  font-size: var(--text-secondary);
   line-height: 1.45;
 }
 
@@ -195,7 +195,7 @@
   padding-left: 0.85rem;
   border-left: 2px solid var(--color-ink);
   color: var(--color-muted);
-  font-size: 0.72rem;
+  font-size: var(--text-secondary);
 }
 
 .submitButton {
@@ -205,8 +205,8 @@
   border: 1px solid var(--color-ink);
   background: var(--color-ink);
   color: var(--color-paper);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.09em;
   text-transform: uppercase;
   transition:
@@ -223,7 +223,7 @@
 .privacy {
   margin: 0.8rem 0 0;
   color: var(--color-muted);
-  font-size: 0.6875rem;
+  font-size: var(--text-secondary);
   text-align: center;
 }
 
@@ -235,13 +235,13 @@
 }
 
 .confirmation strong {
-  font-size: 0.85rem;
+  font-size: var(--text-secondary);
 }
 
 .confirmation p {
   margin: 0.45rem 0 0;
   color: var(--color-muted);
-  font-size: 0.72rem;
+  font-size: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -256,8 +256,8 @@
 
 .summary > h2 {
   margin: 0 0 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -308,8 +308,8 @@
 
 .summaryInformation h3 {
   margin: 0;
-  font-size: 0.78rem;
-  font-weight: 650;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   line-height: 1.35;
 }
 
@@ -318,7 +318,7 @@
   display: block;
   margin: 0.35rem 0 0;
   color: var(--color-muted);
-  font-size: 0.625rem;
+  font-size: var(--text-secondary);
 }
 
 .summaryPrice {
@@ -326,7 +326,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
-  font-size: 0.65rem;
+  font-size: var(--text-secondary);
 }
 
 .summaryPrice span {
@@ -334,7 +334,7 @@
 }
 
 .summaryPrice strong {
-  font-size: 0.72rem;
+  font-size: var(--text-secondary);
 }
 
 .totals {
@@ -347,13 +347,13 @@
   gap: 1rem;
   padding-block: 0.65rem;
   color: var(--color-muted);
-  font-size: 0.75rem;
+  font-size: var(--text-secondary);
 }
 
 .totals dd {
   margin: 0;
   color: var(--color-ink);
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
   text-align: right;
 }
 
@@ -362,14 +362,14 @@
   padding-top: 1.1rem;
   border-top: 1px solid var(--color-ink);
   color: var(--color-ink);
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .deliveryDisclaimer {
   margin: 0.75rem 0 0;
   color: var(--color-muted);
-  font-size: 0.65rem;
+  font-size: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -395,8 +395,8 @@
   padding: 0.8rem 1.5rem;
   background: var(--color-ink);
   color: var(--color-paper);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -458,3 +458,13 @@
 }
 
 .method input:checked + span { background: #000000; color: #FFFFFF; } .method input:checked + span small { color: #FFFFFF; }
+
+/* Shared typography scale. */
+.heading h1, .empty h1 { font-size: var(--text-hero); line-height: var(--leading-heading); letter-spacing: -0.035em; }
+.heading > p:last-child, .field input, .field textarea { font-size: var(--text-body); line-height: var(--leading-body); }
+.sectionHeading h2, .sectionHeading strong, .summary > h2 { font-size: var(--text-h3); line-height: 1.25; letter-spacing: 0; }
+.method strong, .submitButton, .empty > a { font-size: var(--text-control); letter-spacing: 0.015em; }
+.method small { line-height: 1.5; }
+.summaryInformation h3 { font-size: var(--text-product); line-height: 1.4; }
+.summaryPrice strong, .totals .provisionalTotal { font-size: var(--text-price); font-variant-numeric: tabular-nums; }
+.totals > div { flex-wrap: wrap; }

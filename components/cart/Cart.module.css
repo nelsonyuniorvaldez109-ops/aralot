@@ -11,16 +11,16 @@
 .eyebrow {
   margin: 0 0 0.8rem;
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .heading h1,
 .empty h1 {
   margin: 0;
   font-size: clamp(2.25rem, 5vw, 4.5rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   line-height: 1;
   letter-spacing: -0.055em;
   text-transform: uppercase;
@@ -29,7 +29,7 @@
 .heading > p:last-child {
   margin: 1rem 0 0;
   color: var(--color-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-secondary);
 }
 
 .layout {
@@ -91,7 +91,7 @@
 .itemInformation h2 {
   margin: 0;
   font-size: 1rem;
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
   line-height: 1.35;
 }
 
@@ -107,7 +107,7 @@
   gap: 0.35rem 1.25rem;
   margin: 0.75rem 0 0;
   color: var(--color-muted);
-  font-size: 0.7rem;
+  font-size: var(--text-secondary);
 }
 
 .variants div {
@@ -117,7 +117,7 @@
 
 .variants dt {
   color: var(--color-ink);
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
 }
 
 .variants dd {
@@ -126,8 +126,8 @@
 
 .unitPrice {
   margin: 0.85rem 0 0;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .itemActions {
@@ -164,8 +164,8 @@
 .quantity output {
   display: grid;
   place-items: center;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .removeButton {
@@ -174,7 +174,7 @@
   border-bottom: 1px solid currentColor;
   background: transparent;
   color: var(--color-muted);
-  font-size: 0.6875rem;
+  font-size: var(--text-secondary);
 }
 
 .removeButton:hover,
@@ -193,13 +193,13 @@
 
 .itemSubtotal span {
   color: var(--color-muted);
-  font-size: 0.625rem;
+  font-size: var(--text-secondary);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .itemSubtotal strong {
-  font-size: 0.85rem;
+  font-size: var(--text-secondary);
 }
 
 .summary {
@@ -213,7 +213,7 @@
 .summary h2 {
   margin: 0 0 1.75rem;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -225,13 +225,13 @@
   padding-block: 1.25rem;
   border-top: 1px solid var(--color-line);
   border-bottom: 1px solid var(--color-line);
-  font-size: 0.85rem;
+  font-size: var(--text-secondary);
 }
 
 .summary p {
   margin: 1rem 0 1.5rem;
   color: var(--color-muted);
-  font-size: 0.7rem;
+  font-size: var(--text-secondary);
 }
 
 .summary button,
@@ -245,8 +245,8 @@
   border: 1px solid var(--color-ink);
   background: var(--color-ink);
   color: var(--color-paper);
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -278,8 +278,8 @@
   padding: 0.8rem 1.5rem;
   background: var(--color-ink);
   color: var(--color-paper);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -327,3 +327,12 @@
 }
 
 .quantity button:hover:not(:disabled), .quantity button:focus-visible { background: #000000; color: #FFFFFF; } .summaryCheckout:hover, .summaryCheckout:focus-visible { background: #FFFFFF; color: #000000; }
+
+/* Shared typography scale. */
+.heading h1, .empty h1 { font-size: var(--text-hero); line-height: var(--leading-heading); letter-spacing: -0.035em; }
+.heading > p:last-child { font-size: var(--text-body); }
+.itemInformation h2 { font-size: var(--text-product); line-height: 1.4; }
+.unitPrice, .itemSubtotal strong { font-size: var(--text-price); font-variant-numeric: tabular-nums; }
+.summary h2 { font-size: var(--text-h3); line-height: 1.25; letter-spacing: 0; }
+.summaryRow { font-size: var(--text-body); }
+.summaryCheckout, .summary button, .empty > a, .quantity output { font-size: var(--text-control); letter-spacing: 0.015em; }

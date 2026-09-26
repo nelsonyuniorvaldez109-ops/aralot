@@ -1,4 +1,21 @@
 :root {
+  --text-hero: clamp(3rem, 4vw, 3.5rem);
+  --text-h2: clamp(2rem, 2.5vw, 2.25rem);
+  --text-h3: clamp(1.375rem, 1.8vw, 1.625rem);
+  --text-product: clamp(1.0625rem, 1.3vw, 1.125rem);
+  --text-price: clamp(1.125rem, 1.5vw, 1.375rem);
+  --text-body: 1rem;
+  --text-secondary: 0.875rem;
+  --text-control: 1rem;
+  --text-nav: 0.9375rem;
+  --text-announcement: 0.8125rem;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --leading-body: 1.6;
+  --leading-heading: 1.15;
+
   --color-ink: #000000;
   --color-muted: #000000;
   --color-paper: #ffffff;
@@ -15,7 +32,8 @@ body {
   color: var(--color-ink);
   font-family: var(--font-manrope), Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  line-height: 1.5;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; color: inherit; }
@@ -29,3 +47,18 @@ button { cursor: pointer; }
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
 input, textarea, select { accent-color: #000000; } input::placeholder, textarea::placeholder { color: #000000; opacity: 1; }
+
+/* Shared type scale; component modules select the appropriate semantic role. */
+h1, h2, h3, p, a, button, label, legend, output, dd { overflow-wrap: anywhere; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, textarea, select { font-family: inherit; }
+@media (max-width: 47.999rem) {
+  :root {
+    --text-hero: clamp(2rem, 5vw, 2.25rem);
+    --text-h2: clamp(1.625rem, 4vw, 1.75rem);
+    --text-h3: clamp(1.25rem, 3vw, 1.375rem);
+    --text-product: 1.0625rem;
+    --text-price: 1.25rem;
+    --text-nav: 1rem;
+  }
+}

@@ -24,21 +24,21 @@
 
 .shipping h2 {
   color: #FFFFFF;
-  font-size: 0.65rem;
-  letter-spacing: 0.22em;
+  font-size: var(--text-secondary);
+  letter-spacing: 0.06em;
 }
 
 .shipping p {
   margin: 0;
   font-size: clamp(1rem, 2vw, 1.5rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .shipping span {
   display: block;
   margin-top: 0.35rem;
   color: #FFFFFF;
-  font-size: 0.75rem;
+  font-size: var(--text-secondary);
 }
 
 .social {
@@ -53,14 +53,14 @@
 .social p {
   margin: 0 0 0.6rem;
   color: #FFFFFF;
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .social h2 {
   font-size: clamp(1.5rem, 3vw, 3rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   letter-spacing: -0.04em;
 }
 
@@ -69,7 +69,7 @@
   align-items: center;
   gap: 0.8rem;
   min-height: 2.75rem;
-  font-size: 0.8rem;
+  font-size: var(--text-secondary);
 }
 
 .social svg {
@@ -92,33 +92,33 @@
 .columns {
   display: grid;
   grid-template-columns: minmax(13rem, 1.6fr) repeat(4, minmax(8rem, 1fr));
-  gap: clamp(2rem, 4vw, 4rem);
+  gap: clamp(1.25rem, 2vw, 2rem);
   padding-block: clamp(4rem, 8vw, 7rem);
 }
 
 .brand h2 {
   font-size: clamp(1.6rem, 3vw, 2.5rem);
-  font-weight: 750;
-  letter-spacing: 0.12em;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
 }
 
 .brand p {
   max-width: 17rem;
   margin: 1.25rem 0 0;
   color: #FFFFFF;
-  font-size: 0.8rem;
+  font-size: var(--text-secondary);
 }
 
 .column h2 {
   margin-bottom: 1.25rem;
   color: #FFFFFF;
-  font-size: 0.625rem;
-  letter-spacing: 0.18em;
+  font-size: var(--text-secondary);
+  letter-spacing: 0.06em;
 }
 
 .column ul { margin: 0; padding: 0; list-style: none; }
 .column li + li { margin-top: 0.75rem; }
-.column a { font-size: 0.75rem; }
+.column a { font-size: var(--text-secondary); }
 
 .column address {
   display: grid;
@@ -129,7 +129,7 @@
 .column address span {
   margin-top: 0.5rem;
   color: #FFFFFF;
-  font-size: 0.625rem;
+  font-size: var(--text-secondary);
 }
 
 .column address a { overflow-wrap: anywhere; }
@@ -141,7 +141,7 @@
   padding-block: 1.5rem;
   border-top: 1px solid #FFFFFF;
   color: #FFFFFF;
-  font-size: 0.625rem;
+  font-size: var(--text-secondary);
 }
 
 .legal p { margin: 0; }
@@ -161,3 +161,10 @@
   .legal { display: block; }
   .legal p + p { margin-top: 0.5rem; }
 }
+
+/* Shared typography scale. */
+.social h2 { font-size: var(--text-h2); line-height: var(--leading-heading); }
+.column h2 { font-size: var(--text-h3); line-height: 1.25; letter-spacing: 0; font-weight: var(--weight-semibold); }
+.shipping p, .brand p { font-size: var(--text-body); line-height: var(--leading-body); }
+.column a, .social a { font-size: var(--text-control); line-height: 1.5; }
+.legal, .shipping span, .column address span { font-size: var(--text-secondary); line-height: 1.5; }

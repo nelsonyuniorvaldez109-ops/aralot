@@ -13,16 +13,16 @@
 .intro p {
   margin: 0 0 0.9rem;
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .intro h2 {
   max-width: 15ch;
   margin: 0;
   font-size: clamp(2rem, 4vw, 4rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   line-height: 1;
   letter-spacing: -0.05em;
 }
@@ -32,14 +32,14 @@
   max-width: 34rem;
   margin-top: 1.25rem;
   color: var(--color-muted);
-  font-size: 0.85rem;
+  font-size: var(--text-secondary);
 }
 
 .form label {
   display: block;
   margin-bottom: 0.65rem;
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .controls {
@@ -56,7 +56,7 @@
   background: transparent;
   color: var(--color-ink);
   font: inherit;
-  font-size: 0.9rem;
+  font-size: var(--text-secondary);
 }
 
 .controls input:focus {
@@ -72,8 +72,8 @@
   padding: 0 0.25rem 0 1.5rem;
   border: 0;
   background: transparent;
-  font-size: 0.7rem;
-  font-weight: 750;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-bold);
   letter-spacing: 0.08em;
 }
 
@@ -87,12 +87,12 @@
   min-height: 1.25rem;
   margin: 0.65rem 0 0;
   color: var(--color-muted);
-  font-size: 0.7rem;
+  font-size: var(--text-secondary);
 }
 
 .error {
   color: var(--color-ink);
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
 }
 
 @media (max-width: 55.999rem) {
@@ -120,3 +120,8 @@
     color: var(--color-paper);
   }
 }
+
+/* Shared typography scale. */
+.intro h2 { font-size: var(--text-h2); line-height: var(--leading-heading); }
+.intro span { font-size: var(--text-body); line-height: var(--leading-body); }
+.controls input, .controls button { font-size: var(--text-control); letter-spacing: 0.025em; }

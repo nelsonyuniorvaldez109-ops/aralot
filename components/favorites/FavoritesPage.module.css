@@ -11,9 +11,9 @@
 .eyebrow {
   margin: 0 0 0.8rem;
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .heading h1,
@@ -21,7 +21,7 @@
   max-width: 48rem;
   margin: 0;
   font-size: clamp(2.25rem, 5vw, 4.5rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   line-height: 1;
   letter-spacing: -0.055em;
   text-transform: uppercase;
@@ -30,7 +30,7 @@
 .heading > p:last-child {
   margin: 1rem 0 0;
   color: var(--color-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-secondary);
 }
 
 .grid {
@@ -61,8 +61,8 @@
   padding: 0.8rem 1.5rem;
   background: var(--color-ink);
   color: var(--color-paper);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -96,3 +96,8 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Shared typography scale. */
+.heading h1, .empty h1 { font-size: var(--text-hero); line-height: var(--leading-heading); letter-spacing: -0.035em; }
+.heading > p:last-child { font-size: var(--text-body); }
+.empty > a { font-size: var(--text-control); letter-spacing: 0.015em; }

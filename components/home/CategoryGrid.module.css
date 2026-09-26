@@ -14,16 +14,16 @@
 .eyebrow {
   margin: 0;
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .heading h2 {
   max-width: 34rem;
   margin: 0;
   font-size: clamp(1.75rem, 3vw, 3rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   line-height: 1.08;
   letter-spacing: -0.04em;
   text-align: right;
@@ -125,7 +125,7 @@
 .meta h3 {
   margin: 0;
   font-size: clamp(0.875rem, 1.2vw, 1rem);
-  font-weight: 700;
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.05em;
 }
 
@@ -135,7 +135,7 @@
   gap: 0.55rem;
   margin-top: 0.65rem;
   color: var(--color-muted);
-  font-size: 0.75rem;
+  font-size: var(--text-secondary);
 }
 
 .cta > span {
@@ -184,3 +184,8 @@
 }
 
 .image { object-fit: contain; }
+
+/* Shared typography scale. */
+.heading h2 { font-size: var(--text-h2); line-height: var(--leading-heading); }
+.meta h3 { font-size: var(--text-h3); line-height: 1.25; letter-spacing: 0; }
+.cta { font-size: var(--text-control); }

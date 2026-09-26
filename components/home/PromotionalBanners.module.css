@@ -94,16 +94,16 @@
 .eyebrow {
   margin: 0 0 1rem;
   color: #FFFFFF;
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .content h3 {
   max-width: 12ch;
   margin: 0;
   font-size: clamp(2rem, 4.3vw, 4.25rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   line-height: 0.98;
   letter-spacing: -0.05em;
 }
@@ -122,8 +122,8 @@
   margin-top: 2rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid currentColor;
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
 }
 
@@ -162,3 +162,7 @@
 .banner:hover .image { transform: scale(1.025); }
 .content { width: 100%; flex: 1; padding: clamp(1.5rem, 3vw, 3rem); }
 .content h3 { max-width: 18ch; font-size: clamp(2rem, 3vw, 3.25rem); }
+/* Shared typography scale. */
+.content h3 { font-size: var(--text-h3); line-height: 1.2; letter-spacing: -0.025em; }
+.description { font-size: var(--text-body); line-height: var(--leading-body); }
+.cta { font-size: var(--text-control); letter-spacing: 0.025em; }

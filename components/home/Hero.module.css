@@ -28,14 +28,14 @@
 }
 .eyebrow {
   margin: 0 0 1.75rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.32em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 .title {
   margin: 0;
   font-size: clamp(3.5rem, 6.1vw, 6rem);
-  font-weight: 800;
+  font-weight: var(--weight-bold);
   line-height: 1.02;
   letter-spacing: -0.055em;
 }
@@ -61,9 +61,9 @@
   border-radius: 0;
   background: var(--color-paper);
   color: var(--color-ink);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
   transition: background-color 160ms ease, color 160ms ease;
 }
 .cta svg {
@@ -81,9 +81,9 @@
 .signature {
   margin: 2.25rem 0 0;
   color: #FFFFFF;
-  font-size: 0.5625rem;
-  font-weight: 500;
-  letter-spacing: 0.15em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.06em;
   line-height: 1.8;
 }
 @media (max-width: 63.999rem) {
@@ -109,7 +109,7 @@
   }
   .eyebrow {
     margin-bottom: 1.5rem;
-    font-size: 0.625rem;
+    font-size: var(--text-secondary);
   }
   .title {
     font-size: clamp(2.125rem, 10.4vw, 3.875rem);
@@ -119,7 +119,7 @@
   .description {
     max-width: 20rem;
     margin-top: 1.5rem;
-    font-size: 0.875rem;
+    font-size: var(--text-secondary);
   }
   .cta {
     width: 100%;
@@ -128,7 +128,7 @@
   }
   .signature {
     margin-top: 1.75rem;
-    font-size: 0.5rem;
+    font-size: var(--text-secondary);
     letter-spacing: 0.09em;
   }
   .image {
@@ -138,3 +138,9 @@
     background: linear-gradient(0deg, rgb(0 0 0 / 92%) 0%, rgb(0 0 0 / 75%) 42%, rgb(0 0 0 / 8%) 75%);
   }
 }
+
+/* Shared typography scale. */
+.title { font-size: var(--text-hero); line-height: var(--leading-heading); letter-spacing: -0.035em; }
+.description { font-size: var(--text-body); line-height: var(--leading-body); }
+.cta { font-size: var(--text-control); letter-spacing: 0.025em; }
+.signature, .eyebrow { font-size: var(--text-secondary); line-height: 1.5; letter-spacing: 0.04em; }

@@ -22,15 +22,15 @@
 .heading p {
   margin: 0 0 0.65rem;
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
 }
 
 .heading h2 {
   margin: 0;
   font-size: clamp(1.8rem, 4vw, 3.75rem);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   line-height: 1;
   letter-spacing: -0.05em;
   text-transform: uppercase;
@@ -66,8 +66,8 @@
 .searchField label {
   display: block;
   margin-bottom: 0.55rem;
-  font-size: 0.6875rem;
-  font-weight: 650;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .searchField input {
@@ -95,7 +95,7 @@
 .message {
   margin: 1.5rem 0 0;
   color: var(--color-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-secondary);
 }
 
 .results ul {
@@ -156,19 +156,19 @@
 }
 
 .productInformation strong {
-  font-size: 0.85rem;
+  font-size: var(--text-secondary);
   line-height: 1.35;
 }
 
 .productInformation small {
   margin-top: 0.3rem;
   color: var(--color-muted);
-  font-size: 0.65rem;
+  font-size: var(--text-secondary);
 }
 
 .price {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   white-space: nowrap;
 }
 
@@ -201,3 +201,9 @@
 }
 
 .heading button:hover, .heading button:focus-visible { background: #000000; color: #FFFFFF; }
+
+/* Shared typography scale. */
+.heading h2 { font-size: var(--text-h2); line-height: var(--leading-heading); }
+.searchField input, .message { font-size: var(--text-body); line-height: var(--leading-body); }
+.productInformation strong { font-size: var(--text-product); font-weight: var(--weight-semibold); }
+.price { font-size: var(--text-price); font-variant-numeric: tabular-nums; }

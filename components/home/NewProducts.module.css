@@ -14,7 +14,7 @@
 .heading h2 {
   margin: 0;
   font-size: clamp(1.5rem, 2.4vw, 2.5rem);
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
   line-height: 1.1;
   letter-spacing: -0.035em;
 }
@@ -25,8 +25,8 @@
   align-items: center;
   gap: 0.55rem;
   color: var(--color-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .viewAll span {
@@ -84,3 +84,8 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Shared typography scale. */
+.heading h2 { font-size: var(--text-h2); line-height: var(--leading-heading); max-width: none; }
+.heading { flex-wrap: wrap; }
+.viewAll { font-size: var(--text-control); }

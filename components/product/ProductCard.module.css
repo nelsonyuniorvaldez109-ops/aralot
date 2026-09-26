@@ -108,8 +108,8 @@
   padding: 0.35rem 0.5rem;
   background: var(--color-ink);
   color: var(--color-paper);
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
 }
 
@@ -158,16 +158,16 @@
 .category {
   margin: 0 0 0.45rem;
   color: var(--color-muted);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .content h3 {
   margin: 0;
   font-size: clamp(0.95rem, 1.2vw, 1.1rem);
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
   line-height: 1.35;
 }
 
@@ -189,21 +189,21 @@
   align-items: baseline;
   gap: 0.5rem;
   margin: 0.7rem 0 0;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
 }
 
 .prices del {
   color: var(--color-muted);
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-medium);
 }
 
 .details {
   min-height: 5.75rem;
   margin-top: 1.15rem;
   color: var(--color-muted);
-  font-size: 0.6875rem;
+  font-size: var(--text-secondary);
 }
 
 .detailRow {
@@ -218,7 +218,7 @@
 .detailRow > span,
 .presentation > span {
   color: var(--color-ink);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .detailRow ul {
@@ -246,8 +246,8 @@
   padding: 0.85rem 0.75rem;
   border: 1px solid var(--color-ink);
   background: var(--color-paper);
-  font-size: 0.6875rem;
-  font-weight: 700;
+  font-size: var(--text-secondary);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition:
@@ -278,3 +278,10 @@
 }
 
 .addButton { background: #000000; color: #FFFFFF; } .addButton:hover, .addButton:focus-visible { background: #FFFFFF; color: #000000; }
+
+/* Shared typography scale. */
+.content h3 { font-size: var(--text-product); line-height: 1.4; }
+.prices { font-size: var(--text-price); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+.addButton { font-size: var(--text-control); line-height: 1.4; letter-spacing: 0.015em; }
+.details { line-height: 1.5; }
+.detailRow, .presentation { flex-wrap: wrap; }
