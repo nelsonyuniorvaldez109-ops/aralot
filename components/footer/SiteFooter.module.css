@@ -5,8 +5,8 @@
 }
 
 .shipping {
-  border-bottom: 1px solid #333333;
-  background: #202020;
+  border-bottom: 1px solid #FFFFFF;
+  background: #000000;
 }
 
 .shippingInner {
@@ -23,7 +23,7 @@
 .column h2 { margin: 0; }
 
 .shipping h2 {
-  color: #bcbcbc;
+  color: #FFFFFF;
   font-size: 0.65rem;
   letter-spacing: 0.22em;
 }
@@ -37,7 +37,7 @@
 .shipping span {
   display: block;
   margin-top: 0.35rem;
-  color: #adadad;
+  color: #FFFFFF;
   font-size: 0.75rem;
 }
 
@@ -47,12 +47,12 @@
   justify-content: space-between;
   gap: 2rem;
   padding-block: clamp(3rem, 6vw, 5rem);
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid #FFFFFF;
 }
 
 .social p {
   margin: 0 0 0.6rem;
-  color: #9f9f9f;
+  color: #FFFFFF;
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -105,13 +105,13 @@
 .brand p {
   max-width: 17rem;
   margin: 1.25rem 0 0;
-  color: #a8a8a8;
+  color: #FFFFFF;
   font-size: 0.8rem;
 }
 
 .column h2 {
   margin-bottom: 1.25rem;
-  color: #a8a8a8;
+  color: #FFFFFF;
   font-size: 0.625rem;
   letter-spacing: 0.18em;
 }
@@ -128,7 +128,7 @@
 
 .column address span {
   margin-top: 0.5rem;
-  color: #8f8f8f;
+  color: #FFFFFF;
   font-size: 0.625rem;
 }
 
@@ -139,8 +139,8 @@
   justify-content: space-between;
   gap: 2rem;
   padding-block: 1.5rem;
-  border-top: 1px solid #333333;
-  color: #8f8f8f;
+  border-top: 1px solid #FFFFFF;
+  color: #FFFFFF;
   font-size: 0.625rem;
 }
 

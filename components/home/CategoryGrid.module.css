@@ -47,7 +47,7 @@
   position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background: #202020;
+  background: #FFFFFF;
 }
 
 .image,
@@ -61,14 +61,14 @@
 
 .image {
   object-fit: cover;
-  filter: grayscale(1);
+  filter: none;
 }
 
 .placeholder::before,
 .placeholder::after {
   content: "";
   position: absolute;
-  background: #333333;
+  background: #000000;
 }
 
 .placeholder::before {
@@ -80,12 +80,12 @@
   bottom: 12%;
   width: 46%;
   height: 36%;
-  border: 1px solid #4a4a4a;
+  border: 1px solid #000000;
   background: transparent;
 }
 
 .placeholder2 {
-  background: #292929;
+  background: #FFFFFF;
 }
 
 .placeholder2::before {
@@ -94,18 +94,18 @@
 }
 
 .placeholder3 {
-  background: #161616;
+  background: #FFFFFF;
 }
 
 .placeholder3::before {
   inset: 36% 12%;
-  border-top: 1px solid #555555;
-  border-bottom: 1px solid #555555;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
   background: transparent;
 }
 
 .placeholder4 {
-  background: #242424;
+  background: #FFFFFF;
 }
 
 .placeholder4::before {

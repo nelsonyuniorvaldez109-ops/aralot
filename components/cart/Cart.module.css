@@ -57,7 +57,7 @@
   display: block;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #eeeeee;
+  background: #FFFFFF;
 }
 
 .itemImage,
@@ -73,15 +73,15 @@
 }
 
 .itemPlaceholder {
-  background: #eeeeee;
+  background: #FFFFFF;
 }
 
 .itemPlaceholder::before {
   content: "";
   position: absolute;
   inset: 18% 25% 22%;
-  border: 1px solid #d1d1d1;
-  background: #e2e2e2;
+  border: 1px solid #000000;
+  background: #000000;
 }
 
 .itemInformation {
@@ -157,7 +157,7 @@
 }
 
 .quantity button:disabled {
-  color: #aaaaaa;
+  color: #000000; opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -325,3 +325,5 @@
     grid-column: 1;
   }
 }
+
+.quantity button:hover:not(:disabled), .quantity button:focus-visible { background: #000000; color: #FFFFFF; } .summaryCheckout:hover, .summaryCheckout:focus-visible { background: #FFFFFF; color: #000000; }

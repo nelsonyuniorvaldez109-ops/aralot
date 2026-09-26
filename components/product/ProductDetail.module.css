@@ -10,7 +10,7 @@
   min-width: 0;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #eeeeee;
+  background: #FFFFFF;
 }
 
 .image,
@@ -26,19 +26,19 @@
 }
 
 .placeholder {
-  background: #eeeeee;
+  background: #FFFFFF;
 }
 
 .placeholder::before,
 .placeholder::after {
   content: "";
   position: absolute;
-  border: 1px solid #d2d2d2;
+  border: 1px solid #000000;
 }
 
 .placeholder::before {
   inset: 14% 25% 22%;
-  background: #e1e1e1;
+  background: #000000;
 }
 
 .placeholder::after {
@@ -46,7 +46,7 @@
   bottom: 12%;
   width: 45%;
   height: 26%;
-  background: #f5f5f5;
+  background: #FFFFFF;
 }
 
 .placeholder2::before {
@@ -223,7 +223,7 @@
 }
 
 .quantity button:disabled {
-  color: #aaaaaa;
+  color: #000000; opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -314,3 +314,5 @@
     min-width: 0;
   }
 }
+
+.quantity button:hover:not(:disabled), .quantity button:focus-visible { background: #000000; color: #FFFFFF; } .favoriteButton:hover { background: #000000; color: #FFFFFF; }

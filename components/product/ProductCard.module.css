@@ -10,7 +10,7 @@
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #eeeeee;
+  background: #FFFFFF;
 }
 
 .productLink {
@@ -40,19 +40,19 @@
 }
 
 .placeholder {
-  background: #eeeeee;
+  background: #FFFFFF;
 }
 
 .placeholder::before,
 .placeholder::after {
   content: "";
   position: absolute;
-  border: 1px solid #d2d2d2;
+  border: 1px solid #000000;
 }
 
 .placeholder::before {
   inset: 17% 23% 24%;
-  background: #e2e2e2;
+  background: #000000;
 }
 
 .placeholder::after {
@@ -60,11 +60,11 @@
   bottom: 13%;
   width: 42%;
   height: 24%;
-  background: #f5f5f5;
+  background: #FFFFFF;
 }
 
 .placeholder2 {
-  background: #e7e7e7;
+  background: #FFFFFF;
 }
 
 .placeholder2::before {
@@ -85,7 +85,7 @@
 }
 
 .placeholder4 {
-  background: #e9e9e9;
+  background: #FFFFFF;
 }
 
 .placeholder4::before {
@@ -123,9 +123,9 @@
   height: 2.25rem;
   padding: 0;
   place-items: center;
-  border: 1px solid #d8d8d8;
+  border: 1px solid #000000;
   border-radius: 50%;
-  background: rgb(255 255 255 / 90%);
+  background: #FFFFFF;
   transition:
     background-color 180ms ease,
     color 180ms ease;
@@ -276,3 +276,5 @@
     min-height: 0;
   }
 }
+
+.addButton { background: #000000; color: #FFFFFF; } .addButton:hover, .addButton:focus-visible { background: #FFFFFF; color: #000000; }

@@ -1,14 +1,14 @@
 .hero {
   position: relative;
   isolation: isolate;
-  background: #292929;
+  background: #000000;
   color: var(--color-paper);
 }
 .image {
   z-index: -2;
   object-fit: cover;
   object-position: 72% 15%;
-  filter: grayscale(1);
+  filter: none;
 }
 .shade {
   position: absolute;
@@ -45,7 +45,7 @@
 .description {
   max-width: 27rem;
   margin: 1.75rem 0 0;
-  color: #e0e0e0;
+  color: #FFFFFF;
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -80,7 +80,7 @@
 }
 .signature {
   margin: 2.25rem 0 0;
-  color: #cccccc;
+  color: #FFFFFF;
   font-size: 0.5625rem;
   font-weight: 500;
   letter-spacing: 0.15em;
