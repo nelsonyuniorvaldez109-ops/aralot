@@ -23,7 +23,6 @@ export function Hero({ imageAlt }: HeroProps) {
       <div className={styles.shade} aria-hidden="true" />
       <div className={`container ${styles.inner}`}>
         <div className={styles.content}>
-          <p className={styles.eyebrow}>ARA LOT</p>
           <h1 id="hero-title" className={styles.title}>
             <span>ESTILO.</span>
             <span>DISCIPLINA.</span>

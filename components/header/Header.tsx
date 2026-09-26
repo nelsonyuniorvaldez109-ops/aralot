@@ -67,8 +67,6 @@ export function Header() {
             {menuOpen ? <path d="m6 6 12 12M6 18 18 6" /> : <path d="M3 6h18M3 12h18M3 18h18" />}
           </svg>
         </button>
-        {/* Temporary wordmark: replace this text with the official logo asset when available. */}
-        <Link href="/" className={styles.wordmark} aria-label="ARA LOT — Inicio">ARA LOT</Link>
         <DesktopNavigation />
         <div className={styles.actions} role="group" aria-label="Acciones de la tienda">
           {actions.map(({ label, compact, icon }) => {
