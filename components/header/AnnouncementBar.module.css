@@ -1,0 +1,52 @@
+.announcement {
+  --marquee-duration: 30s;
+  position: relative;
+  padding-right: 2.5rem;
+  background: #000;
+  color: #fff;
+}
+.viewport { overflow: hidden; }
+.track {
+  display: flex;
+  width: max-content;
+  animation: travel var(--marquee-duration) linear infinite;
+}
+.group {
+  display: flex;
+  flex: 0 0 auto;
+  width: max(60rem, 100vw);
+  justify-content: space-around;
+}
+.message {
+  display: flex;
+  width: 20rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.5rem 1rem;
+}
+.message svg { width: 1.5rem; height: 1.5rem; flex: none; }
+.message p { margin: 0; font-size: 0.625rem; line-height: 1.5; font-weight: 600; letter-spacing: 0.07em; }
+.message span { display: block; }
+.pause { position: absolute; right: 0; top: 0; width: 2.5rem; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 2; }
+.pauseLabel { position: absolute; right: 0; top: 0; bottom: 0; width: 2.5rem; display: grid; place-items: center; background: #000; color: #fff; }
+.pause:focus-visible + .pauseLabel { outline: 2px solid #fff; outline-offset: -4px; }
+.playSymbol { display: none; }
+.pause:checked + .pauseLabel .pauseSymbol { display: none; }
+.pause:checked + .pauseLabel .playSymbol { display: inline; }
+.pause:checked ~ .viewport .track { animation-play-state: paused; }
+@keyframes travel { to { transform: translateX(-50%); } }
+@media (max-width: 37.499rem) {
+  .group { width: 51rem; }
+  .message { width: 17rem; gap: 0.5rem; padding-inline: 0.5rem; }
+  .message p { font-size: 0.5625rem; letter-spacing: 0.04em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .announcement { padding-right: 0; }
+  .track { animation: none; width: 100%; transform: none; }
+  .group { width: 100%; flex-wrap: wrap; }
+  .group[aria-hidden="true"], .pause, .pauseLabel { display: none; }
+  .message { max-width: 100%; }
+}
