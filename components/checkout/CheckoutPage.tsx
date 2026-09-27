@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { ReceiptPreview } from "./ReceiptPreview";
 import type { Receipt } from "./receipt";
+import { deliveryLocations, findDeliveryProvince } from "@/data/delivery-locations";
 import { OrderSummary } from "./OrderSummary";
 import styles from "./Checkout.module.css";
 
@@ -24,7 +25,16 @@ type CheckoutErrors = Partial<Record<CheckoutField, string>>;
 
 const fieldLimits = { firstName: 80, lastName: 80, phone: 25, address: 200, reference: 300, email: 254, province: 100, municipality: 100, sector: 100 } as const;
 
+const addressFields = new Set(["province", "municipality", "sector", "address", "reference"]);
+
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function normalizePhone(value: string): string | null {
+  const compact = value.replace(/[\s-]/g, "");
+  if (!/^(?:\+?1)?(?:809|829|849)\d{7}$/.test(compact)) return null;
+  const local = compact.replace(/^\+?1/, "");
+  return `+1 ${local.slice(0, 3)}-${local.slice(3, 6)}-${local.slice(6)}`;
+}
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   return message ? (
@@ -41,6 +51,9 @@ function getValue(formData: FormData, name: string) {
 export function CheckoutPage() {
   const { items, ready, subtotal } = useCart();
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("");
+  const [province, setProvince] = useState("");
+  const [municipality, setMunicipality] = useState("");
+  const municipalities = findDeliveryProvince(province)?.municipalities ?? [];
   const [errors, setErrors] = useState<CheckoutErrors>({});
   const [feedback, setFeedback] = useState("");
   const [receipt, setReceipt] = useState<Receipt>();
@@ -74,20 +87,23 @@ export function CheckoutPage() {
     const email = getValue(formData, "email");
     if (!emailPattern.test(email)) nextErrors.email = "Ingresa un correo válido.";
 
-    const phone = getValue(formData, "phone");
-    const phoneDigits = phone.replace(/\D/g, "");
-    if (!/^[+\d\s().-]+$/.test(phone) || phoneDigits.length < 10 || phoneDigits.length > 15) {
-      nextErrors.phone = "Ingresa un teléfono válido con código de área.";
+    const phone = normalizePhone(getValue(formData, "phone"));
+    if (!phone) nextErrors.phone = "Ingresa un número de teléfono válido.";
+    if (deliveryMethod === "delivery") {
+    const selectedProvince = findDeliveryProvince(getValue(formData, "province"));
+    if (!selectedProvince) nextErrors.province = "Selecciona una provincia.";
+    if (!selectedProvince?.municipalities.includes(getValue(formData, "municipality"))) {
+      nextErrors.municipality = "Selecciona un municipio de la provincia indicada.";
     }
-    if (!getValue(formData, "province")) nextErrors.province = "Ingresa tu provincia.";
-    if (!getValue(formData, "municipality")) nextErrors.municipality = "Ingresa tu municipio.";
     if (!getValue(formData, "sector")) nextErrors.sector = "Ingresa tu sector.";
     if (!getValue(formData, "address")) nextErrors.address = "Ingresa tu dirección.";
+    }
     if (!deliveryMethod) nextErrors.deliveryMethod = "Selecciona un método de entrega.";
 
     for (const [field, limit] of Object.entries(fieldLimits)) {
+      if (deliveryMethod !== "delivery" && addressFields.has(field)) continue;
       if (String(formData.get(field) ?? "").length > limit) {
-        nextErrors[field as CheckoutField] = `Usa como máximo ${limit} caracteres.`;
+        nextErrors[field as CheckoutField] = field === "phone" ? "Ingresa un número de teléfono válido." : `Usa como máximo ${limit} caracteres.`;
       }
     }
     setErrors(nextErrors);
@@ -99,18 +115,18 @@ export function CheckoutPage() {
       return;
     }
 
-    if (!ready || items.length === 0) return;
+    if (!ready || items.length === 0 || !phone) return;
 
     const customer = {
       name: `${getValue(formData, "firstName")} ${getValue(formData, "lastName")}`,
       phone,
       email,
-      province: getValue(formData, "province"),
-      city: getValue(formData, "municipality"),
-      sector: getValue(formData, "sector"),
-      address: getValue(formData, "address"),
-      reference: getValue(formData, "reference"),
-      deliveryMethod: deliveryMethod === "pickup" ? "Recoger" : "Delivery",
+      province: deliveryMethod === "delivery" ? getValue(formData, "province") : "",
+      city: deliveryMethod === "delivery" ? getValue(formData, "municipality") : "",
+      sector: deliveryMethod === "delivery" ? getValue(formData, "sector") : "",
+      address: deliveryMethod === "delivery" ? getValue(formData, "address") : "",
+      reference: deliveryMethod === "delivery" ? getValue(formData, "reference") : "",
+      deliveryMethod: deliveryMethod === "pickup" ? "RECOGER" : "ENVÍO",
     };
 
     const now = new Date();
@@ -216,17 +232,19 @@ export function CheckoutPage() {
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
-                  placeholder="809 000 0000"
+                  placeholder="809-555-1234"
                   required
                   aria-invalid={Boolean(errors.phone)}
-                  aria-describedby={errors.phone ? "phone-error" : undefined}
+                  aria-describedby={errors.phone ? "phone-example phone-error" : "phone-example"}
                   onChange={() => clearError("phone")}
                 />
+                <small id="phone-example">Ejemplo: 809-555-1234</small>
                 <FieldError id="phone-error" message={errors.phone} />
               </div>
             </div>
           </section>
 
+          {deliveryMethod === "delivery" && (
           <section className={styles.formSection} aria-labelledby="address-title">
             <div className={styles.sectionHeading}>
               <span>02</span>
@@ -235,34 +253,51 @@ export function CheckoutPage() {
 
             <div className={styles.fieldGrid}>
               <div className={styles.field}>
-                <label htmlFor="province">Provincia</label>
-                <input
+                <label htmlFor="province">Provincia *</label>
+                <select
                   id="province"
                   name="province"
-                  maxLength={fieldLimits.province}
-                  type="text"
                   autoComplete="address-level1"
+                  value={province}
                   required
                   aria-invalid={Boolean(errors.province)}
                   aria-describedby={errors.province ? "province-error" : undefined}
-                  onChange={() => clearError("province")}
-                />
+                  onChange={(event) => {
+                    setProvince(event.target.value);
+                    setMunicipality("");
+                    clearError("province");
+                    clearError("municipality");
+                  }}
+                >
+                  <option value="">Selecciona una provincia</option>
+                  {deliveryLocations.map(location => (
+                    <option key={location.name} value={location.name}>{location.name}</option>
+                  ))}
+                </select>
                 <FieldError id="province-error" message={errors.province} />
               </div>
 
               <div className={styles.field}>
-                <label htmlFor="municipality">Ciudad / Municipio</label>
-                <input
+                <label htmlFor="municipality">Municipio *</label>
+                <select
                   id="municipality"
                   name="municipality"
-                  maxLength={fieldLimits.municipality}
-                  type="text"
                   autoComplete="address-level2"
+                  value={municipality}
+                  disabled={!province}
                   required
                   aria-invalid={Boolean(errors.municipality)}
                   aria-describedby={errors.municipality ? "municipality-error" : undefined}
-                  onChange={() => clearError("municipality")}
-                />
+                  onChange={(event) => {
+                    setMunicipality(event.target.value);
+                    clearError("municipality");
+                  }}
+                >
+                  <option value="">Selecciona un municipio</option>
+                  {municipalities.map(name => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
+                </select>
                 <FieldError id="municipality-error" message={errors.municipality} />
               </div>
 
@@ -310,6 +345,7 @@ export function CheckoutPage() {
               </div>
             </div>
           </section>
+          )}
 
           <fieldset
             className={styles.formSection}
@@ -330,11 +366,12 @@ export function CheckoutPage() {
                   checked={deliveryMethod === "delivery"}
                   onChange={() => {
                     setDeliveryMethod("delivery");
-                    clearError("deliveryMethod");
+                    setErrors(current => Object.fromEntries(Object.entries(current).filter(([field]) => field !== "deliveryMethod" && !addressFields.has(field))));
+                    setFeedback("");
                   }}
                 />
                 <span>
-                  <strong>Delivery</strong>
+                  <strong>ENVÍO</strong>
                   <small>Entrega en la dirección indicada.</small>
                 </span>
               </label>
@@ -347,7 +384,8 @@ export function CheckoutPage() {
                   checked={deliveryMethod === "pickup"}
                   onChange={() => {
                     setDeliveryMethod("pickup");
-                    clearError("deliveryMethod");
+                    setErrors(current => Object.fromEntries(Object.entries(current).filter(([field]) => field !== "deliveryMethod" && !addressFields.has(field))));
+                    setFeedback("");
                   }}
                 />
                 <span>
@@ -362,7 +400,7 @@ export function CheckoutPage() {
               <p className={styles.methodNote} aria-live="polite">
                 {deliveryMethod === "delivery"
                   ? "El costo de entrega será confirmado con el pedido."
-                  : "Te informaremos cuando tu pedido esté listo para recoger."}
+                  : "El lugar y horario de recogida serán coordinados directamente con ARA LOT por WhatsApp."}
               </p>
             ) : null}
           </fieldset>

@@ -22,9 +22,14 @@ export function receiptRows(receipt: Receipt): ReceiptRow[] {
   add("DATOS DEL CLIENTE", "heading");
   add(`Nombre: ${customer.name}`);
   add(`Teléfono: ${customer.phone}`);
-  add(`Dirección: ${[customer.address, customer.sector, customer.city, customer.province].join(", ")}`);
-  add(`Referencia: ${customer.reference || "No indicada"}`);
-  add(`Entrega: ${customer.deliveryMethod}`);
+  if (customer.deliveryMethod === "RECOGER") {
+    add("Método de entrega: RECOGER");
+    add("Estado de entrega: Pendiente de coordinación");
+  } else {
+    add(`Dirección: ${[customer.address, customer.sector, customer.city, customer.province].join(", ")}`);
+    add(`Referencia: ${customer.reference || "No indicada"}`);
+    add(`Método de entrega: ${customer.deliveryMethod}`);
+  }
   add("DETALLE DEL PEDIDO", "heading");
   items.forEach((item, index) => {
     add(`${index + 1}. ${item.name}`, "heading");
@@ -36,7 +41,7 @@ export function receiptRows(receipt: Receipt): ReceiptRow[] {
     add(`Subtotal: ${money(item.price * item.quantity)}`);
   });
   add(`TOTAL: ${money(items.reduce((sum, item) => sum + item.price * item.quantity, 0))}`, "total");
-  add("Costo de entrega no incluido; por confirmar.");
+  if (customer.deliveryMethod !== "RECOGER") add("Costo de entrega no incluido; por confirmar.");
   add("Gracias por elegir ARA LOT.", "heading");
   add("Realizamos nuestros envíos los fines de semana.");
   return rows;

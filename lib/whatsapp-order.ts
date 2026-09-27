@@ -39,17 +39,22 @@ export function buildWhatsAppUrl(
     "", "PEDIDO", "--------------------", "", products, "",
     "--------------------",
     `TOTAL PROVISIONAL: ${price(total)}`,
-    "Entrega no incluida; por confirmar.",
+    ...(customer.deliveryMethod === "RECOGER" ? [] : ["Entrega no incluida; por confirmar."]),
     "", "DATOS DEL CLIENTE", "",
     `Nombre: ${customer.name}`,
     `Teléfono: ${customer.phone}`,
     `Correo: ${customer.email}`,
-    `Dirección: ${customer.address}`,
-    `Sector: ${customer.sector}`,
-    `Ciudad: ${customer.city}`,
-    `Provincia: ${customer.province}`,
-    `Referencia: ${customer.reference || "No indicada"}`,
-    `Método de entrega: ${customer.deliveryMethod}`,
+    ...(customer.deliveryMethod === "RECOGER" ? [
+      "Método de entrega: RECOGER",
+      "Lugar y horario: Pendientes de coordinación",
+    ] : [
+      `Dirección: ${customer.address}`,
+      `Sector: ${customer.sector}`,
+      `Ciudad: ${customer.city}`,
+      `Provincia: ${customer.province}`,
+      `Referencia: ${customer.reference || "No indicada"}`,
+      `Método de entrega: ${customer.deliveryMethod}`,
+    ]),
   ].join("\n");
 
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;

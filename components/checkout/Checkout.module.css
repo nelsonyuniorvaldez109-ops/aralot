@@ -105,6 +105,7 @@
 }
 
 .field input,
+.field select,
 .field textarea {
   width: 100%;
   min-height: 3.1rem;
@@ -123,6 +124,7 @@
 }
 
 .field input[aria-invalid="true"],
+.field select[aria-invalid="true"],
 .field textarea[aria-invalid="true"] {
   border-color: var(--color-ink);
   box-shadow: inset 0 -2px 0 var(--color-ink);
@@ -461,10 +463,13 @@
 
 /* Shared typography scale. */
 .heading h1, .empty h1 { font-size: var(--text-hero); line-height: var(--leading-heading); letter-spacing: -0.035em; }
-.heading > p:last-child, .field input, .field textarea { font-size: var(--text-body); line-height: var(--leading-body); }
+.heading > p:last-child, .field input, .field select, .field textarea { font-size: var(--text-body); line-height: var(--leading-body); }
 .sectionHeading h2, .sectionHeading strong, .summary > h2 { font-size: var(--text-h3); line-height: 1.25; letter-spacing: 0; }
 .method strong, .submitButton, .empty > a { font-size: var(--text-control); letter-spacing: 0.015em; }
 .method small { line-height: 1.5; }
 .summaryInformation h3 { font-size: var(--text-product); line-height: 1.4; }
 .summaryPrice strong, .totals .provisionalTotal { font-size: var(--text-price); font-variant-numeric: tabular-nums; }
 .totals > div { flex-wrap: wrap; }
+
+.field select { min-width: 0; max-width: 100%; }
+.field select:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
