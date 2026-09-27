@@ -32,8 +32,8 @@ export function SiteFooter() {
         <div className={styles.socialCopy}>
           <h2 id="social-title">ARA LOT EN INSTAGRAM</h2>
           <p>Descubre novedades, ofertas y colecciones exclusivas.<br />Únete a nuestra comunidad.</p>
-          <a className={styles.instagramButton} href={instagram} target="_blank" rel="noopener noreferrer" aria-label="ARA LOT en Instagram (abre en una nueva pestaña)">
-            <Icon name="instagram" /><span>@aralot.caribe</span><span aria-hidden="true">→</span>
+          <a className={styles.instagramButton} href={instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <Icon name="instagram" />
           </a>
         </div>
         {/* Reserved for a future client-supplied photograph; no mockup is embedded. */}
@@ -69,9 +69,9 @@ export function SiteFooter() {
           <section className={`${styles.column} ${styles.contact}`} id="contact" aria-labelledby="contact-title">
             <h2 id="contact-title">CONTÁCTANOS</h2>
             <address>
-              <a href="mailto:aralot.caribe@gmail.com"><Icon name="mail" /><span>Email<span className={styles.contactValue}>aralot.caribe@gmail.com</span></span></a>
-              <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram de ARA LOT (abre en una nueva pestaña)"><Icon name="instagram" /><span>Instagram<span className={styles.contactValue}>@aralot.caribe</span></span></a>
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer" aria-label="Comunícate con ARA LOT por WhatsApp (abre en una nueva pestaña)"><Icon name="whatsapp" /><span>WhatsApp<span className={styles.contactValue}>Comunícate con nosotros <span aria-hidden="true">›</span></span></span></a>
+              <a href="mailto:aralot.caribe@gmail.com" aria-label="Correo electrónico"><Icon name="mail" /></a>
+              <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="instagram" /></a>
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
             </address>
           </section>
         </div>

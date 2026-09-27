@@ -189,3 +189,20 @@
 .heading h2 { font-size: var(--text-h2); line-height: var(--leading-heading); }
 .meta h3 { font-size: var(--text-h3); line-height: 1.25; letter-spacing: 0; }
 .cta { font-size: var(--text-control); }
+
+/* Category section heading only. */
+.heading .eyebrow {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 30px;
+  color: #000000;
+}
+.heading h2 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #000000;
+}
+@media (max-width: 39.999rem) {
+  .heading .eyebrow { font-size: 24px; }
+  .heading h2 { font-size: 17px; }
+}

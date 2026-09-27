@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./Hero.module.css";
 
 type HeroProps = {
@@ -31,19 +32,15 @@ export function Hero({ imageAlt }: HeroProps) {
           <p className={styles.description}>
             Ropa y cuidado personal para el hombre moderno.
           </p>
-          {/* Replace this placeholder with a link when the collection page exists. */}
-          <button
-            type="button"
+          <Link
+            href="/productos?categoria=poloches"
             className={styles.cta}
-            aria-disabled="true"
-            aria-label="Ver colección — próximamente"
-            title="Colección próximamente"
           >
             VER COLECCIÓN
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" focusable="false">
               <path d="M4 12h15m-6-6 6 6-6 6" />
             </svg>
-          </button>
+          </Link>
           <p className={styles.signature}>CALIDAD — CONFIANZA — TU MEJOR VERSIÓN</p>
         </div>
       </div>
