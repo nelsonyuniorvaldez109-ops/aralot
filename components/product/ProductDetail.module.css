@@ -322,3 +322,14 @@
 .prices { font-size: var(--text-price); font-variant-numeric: tabular-nums; }
 .description { font-size: var(--text-body); line-height: var(--leading-body); }
 .option, .addButton, .quantity output, .quantity button { font-size: var(--text-control); letter-spacing: 0.015em; }
+
+/* Detail-page surfaces only; images and interactive control backgrounds stay intact. */
+:global(main):has(.product),
+:global(main):has(.product) > div,
+:global(main):has(.product) > section,
+.product,
+.gallery,
+.placeholder,
+.information {
+  background-color: #f5f5f5;
+}

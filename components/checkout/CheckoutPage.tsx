@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useCart } from "@/components/cart/CartProvider";
-import { WHATSAPP_NUMBER } from "@/lib/store-config";
-import { buildWhatsAppUrl } from "@/lib/whatsapp-order";
+import { ReceiptPreview } from "./ReceiptPreview";
+import type { Receipt } from "./receipt";
 import { OrderSummary } from "./OrderSummary";
 import styles from "./Checkout.module.css";
 
@@ -18,8 +18,11 @@ type CheckoutField =
   | "municipality"
   | "sector"
   | "address"
+  | "reference"
   | "deliveryMethod";
 type CheckoutErrors = Partial<Record<CheckoutField, string>>;
+
+const fieldLimits = { firstName: 80, lastName: 80, phone: 25, address: 200, reference: 300, email: 254, province: 100, municipality: 100, sector: 100 } as const;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -40,6 +43,7 @@ export function CheckoutPage() {
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("");
   const [errors, setErrors] = useState<CheckoutErrors>({});
   const [feedback, setFeedback] = useState("");
+  const [receipt, setReceipt] = useState<Receipt>();
 
   function clearError(field: CheckoutField) {
     setErrors((current) => {
@@ -81,6 +85,11 @@ export function CheckoutPage() {
     if (!getValue(formData, "address")) nextErrors.address = "Ingresa tu dirección.";
     if (!deliveryMethod) nextErrors.deliveryMethod = "Selecciona un método de entrega.";
 
+    for (const [field, limit] of Object.entries(fieldLimits)) {
+      if (String(formData.get(field) ?? "").length > limit) {
+        nextErrors[field as CheckoutField] = `Usa como máximo ${limit} caracteres.`;
+      }
+    }
     setErrors(nextErrors);
 
     const firstInvalid = Object.keys(nextErrors)[0] as CheckoutField | undefined;
@@ -92,7 +101,7 @@ export function CheckoutPage() {
 
     if (!ready || items.length === 0) return;
 
-    const url = buildWhatsAppUrl(WHATSAPP_NUMBER, items, {
+    const customer = {
       name: `${getValue(formData, "firstName")} ${getValue(formData, "lastName")}`,
       phone,
       email,
@@ -102,15 +111,16 @@ export function CheckoutPage() {
       address: getValue(formData, "address"),
       reference: getValue(formData, "reference"),
       deliveryMethod: deliveryMethod === "pickup" ? "Recoger" : "Delivery",
+    };
+
+    const now = new Date();
+    const random = Array.from(crypto.getRandomValues(new Uint32Array(2)), value => value.toString(36)).join("").toUpperCase();
+    setReceipt({
+      id: `ARA-${now.getTime().toString(36).toUpperCase()}-${random}`,
+      date: now.toLocaleString("es-DO", { dateStyle: "medium", timeStyle: "short" }),
+      customer,
+      items: items.map(item => ({ ...item })),
     });
-
-    if (!url) {
-      setFeedback("El pedido por WhatsApp estará disponible cuando configuremos el número oficial de ARA LOT. Tu carrito se conserva.");
-      return;
-    }
-
-    // Same-tab navigation avoids popup blockers. Cart persistence remains untouched.
-    window.location.assign(url);
   }
 
   if (!ready) {
@@ -141,7 +151,7 @@ export function CheckoutPage() {
       </header>
 
       <div className={styles.layout}>
-        <form className={styles.form} noValidate onSubmit={handleSubmit}>
+        <form className={styles.form} noValidate onSubmit={handleSubmit} onChange={() => setReceipt(undefined)}>
           <section className={styles.formSection} aria-labelledby="customer-title">
             <div className={styles.sectionHeading}>
               <span>01</span>
@@ -154,6 +164,7 @@ export function CheckoutPage() {
                 <input
                   id="firstName"
                   name="firstName"
+                  maxLength={fieldLimits.firstName}
                   type="text"
                   autoComplete="given-name"
                   required
@@ -169,6 +180,7 @@ export function CheckoutPage() {
                 <input
                   id="lastName"
                   name="lastName"
+                  maxLength={fieldLimits.lastName}
                   type="text"
                   autoComplete="family-name"
                   required
@@ -184,6 +196,7 @@ export function CheckoutPage() {
                 <input
                   id="email"
                   name="email"
+                  maxLength={fieldLimits.email}
                   type="email"
                   autoComplete="email"
                   required
@@ -199,6 +212,7 @@ export function CheckoutPage() {
                 <input
                   id="phone"
                   name="phone"
+                  maxLength={fieldLimits.phone}
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
@@ -225,6 +239,7 @@ export function CheckoutPage() {
                 <input
                   id="province"
                   name="province"
+                  maxLength={fieldLimits.province}
                   type="text"
                   autoComplete="address-level1"
                   required
@@ -240,6 +255,7 @@ export function CheckoutPage() {
                 <input
                   id="municipality"
                   name="municipality"
+                  maxLength={fieldLimits.municipality}
                   type="text"
                   autoComplete="address-level2"
                   required
@@ -255,6 +271,7 @@ export function CheckoutPage() {
                 <input
                   id="sector"
                   name="sector"
+                  maxLength={fieldLimits.sector}
                   type="text"
                   autoComplete="address-level3"
                   required
@@ -270,6 +287,7 @@ export function CheckoutPage() {
                 <input
                   id="address"
                   name="address"
+                  maxLength={fieldLimits.address}
                   type="text"
                   autoComplete="street-address"
                   required
@@ -284,7 +302,11 @@ export function CheckoutPage() {
                 <label htmlFor="reference">
                   Referencia <span>Opcional</span>
                 </label>
-                <textarea id="reference" name="reference" rows={3} onChange={() => setFeedback("")} />
+                <textarea id="reference" name="reference" rows={3} maxLength={fieldLimits.reference}
+                  aria-invalid={Boolean(errors.reference)}
+                  aria-describedby={errors.reference ? "reference-error" : undefined}
+                  onChange={() => clearError("reference")} />
+                <FieldError id="reference-error" message={errors.reference} />
               </div>
             </div>
           </section>
@@ -362,6 +384,9 @@ export function CheckoutPage() {
 
         <OrderSummary items={items} subtotal={subtotal} />
       </div>
+      {receipt && JSON.stringify(receipt.items) === JSON.stringify(items) && (
+        <ReceiptPreview key={receipt.id} receipt={receipt} />
+      )}
     </section>
   );
 }

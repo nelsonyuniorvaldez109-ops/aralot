@@ -1,0 +1,14 @@
+﻿.preview { margin-top: 3rem; min-width: 0; }
+.preview > h2 { font-size: var(--text-h2); }
+.paper { max-width: 48rem; padding: clamp(18px, 4vw, 48px); border: 1px solid #000000; color: #000000; background: #ffffff; font-family: Georgia, "Times New Roman", serif; }
+.paper p, .paper h3 { overflow-wrap: anywhere; }
+.brand { font-size: clamp(32px, 6vw, 48px); margin: 0 0 12px; font-weight: bold; }
+.heading { font-size: 19px; line-height: 1.4; margin: 26px 0 10px; }
+.text { font-size: 16px; line-height: 1.6; margin: 6px 0; }
+.total { border-top: 1px solid #000000; padding-top: 20px; font-size: 24px; font-weight: bold; margin-top: 28px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 24px; }
+.actions button, .actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 18px; border: 1px solid #000000; background: #000000; color: #ffffff; font-size: 16px; text-align: center; }
+.actions button:hover:not(:disabled), .actions a:hover { background: #ffffff; color: #000000; }
+.actions button:disabled { opacity: .5; cursor: not-allowed; }
+.actions :focus-visible { outline: 2px solid #000000; outline-offset: 4px; }
+@media (max-width: 599px) { .actions { flex-direction: column; } }

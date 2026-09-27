@@ -1,6 +1,6 @@
 import type { CartItem } from "@/components/cart/CartProvider";
 
-type CustomerDetails = {
+export type CustomerDetails = {
   name: string;
   phone: string;
   email: string;
@@ -19,6 +19,7 @@ export function buildWhatsAppUrl(
   number: string,
   items: CartItem[],
   customer: CustomerDetails,
+  receipt?: { id: string; date: string },
 ): string | null {
   if (!/^[1-9]\d{7,14}$/.test(number) || items.length === 0) return null;
 
@@ -28,11 +29,13 @@ export function buildWhatsAppUrl(
     item.selectedColor && `Color: ${item.selectedColor}`,
     item.presentation && `Presentación: ${item.presentation}`,
     `Cantidad: ${item.quantity}`,
+    `Precio unitario: ${price(item.price)}`,
     `Subtotal: ${price(item.price * item.quantity)}`,
   ].filter(Boolean).join("\n")).join("\n\n");
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const message = [
     "Hola, quiero realizar el siguiente pedido:",
+    ...(receipt ? [`Pedido: ${receipt.id} (referencia local)`, `Fecha y hora: ${receipt.date}`] : []),
     "", "PEDIDO", "--------------------", "", products, "",
     "--------------------",
     `TOTAL PROVISIONAL: ${price(total)}`,

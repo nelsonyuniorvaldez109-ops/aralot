@@ -10,7 +10,7 @@ const banners = [
     title: "ESTILO PARA CADA MOMENTO",
     description: "Descubre la colección de ARA LOT para el hombre de hoy.",
     cta: "VER COLECCIÓN",
-    href: "/#new-products",
+    href: "/productos?categoria=poloches",
   },
   {
     eyebrow: "CUIDADO PERSONAL",
@@ -19,7 +19,7 @@ const banners = [
     title: "CUIDA TU ESTILO",
     description: "Shampoo, gelatina y cuidado personal ARA LOT.",
     cta: "VER PRODUCTOS",
-    href: "/#new-products",
+    href: "/productos?categoria=cuidado-personal",
   },
 ] as const;
 

@@ -29,7 +29,7 @@ export const newProducts: Product[] = [
     description:
       "Una pieza esencial de líneas limpias, creada para acompañar el estilo diario del hombre ARA LOT.",
     price: 1200,
-    image: "/images/products/poloch-basic.webp",
+    image: "/images/products/poloch-basico.webp.png",
     colors: ["Negro", "Blanco", "Gris"],
     sizes: ["S", "M", "L", "XL"],
   },
@@ -42,7 +42,7 @@ export const newProducts: Product[] = [
       "Una propuesta refinada para vestir con presencia, comodidad y la identidad sobria de ARA LOT.",
     price: 1190,
     compareAtPrice: 1400,
-    image: "/images/products/poloch-premium.webp",
+    image: "/images/products/poloch-premium.webp.png",
     colors: ["Negro", "Blanco"],
     sizes: ["S", "M", "L", "XL"],
     badge: "-15%",
@@ -55,7 +55,7 @@ export const newProducts: Product[] = [
     description:
       "Una presentación práctica para integrar el cuidado personal a una rutina masculina sencilla.",
     price: 650,
-    image: "/images/products/shampoo.webp",
+    image: "/images/products/champú.webp.png",
     presentation: "400 ml",
   },
   {
@@ -66,7 +66,7 @@ export const newProducts: Product[] = [
     description:
       "Una opción de cuidado personal diseñada para complementar la rutina diaria del hombre ARA LOT.",
     price: 550,
-    image: "/images/products/gelatina.webp",
+    image: "/images/products/gelatina.webp.png",
     presentation: "300 ml",
   },
 ];
