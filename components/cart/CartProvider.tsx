@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { newProducts } from "@/data/products";
+import { getProductImage, newProducts } from "@/data/products";
 
 const MAX_QUANTITY = 20;
 const STORAGE_KEY = "ara-lot-cart";
@@ -67,8 +67,8 @@ function validateItem(value: unknown): CartItem | null {
     productId: product.id,
     slug: product.slug,
     name: product.name,
-    image: product.image,
-    imageAvailable: input.imageAvailable === true,
+    image: getProductImage(product, input.selectedColor as string | undefined),
+    imageAvailable: Boolean(product.imagesByColor?.[input.selectedColor as string]) || input.imageAvailable === true,
     price: product.price,
     quantity: input.quantity,
     selectedColor: input.selectedColor as string | undefined,

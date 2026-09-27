@@ -1,3 +1,4 @@
+import { calculateOrderTotal } from "@/lib/store-config";
 ﻿import type { CartItem } from "@/components/cart/CartProvider";
 import type { CustomerDetails } from "@/lib/whatsapp-order";
 
@@ -40,8 +41,13 @@ export function receiptRows(receipt: Receipt): ReceiptRow[] {
     add(`Precio unitario: ${money(item.price)}`);
     add(`Subtotal: ${money(item.price * item.quantity)}`);
   });
-  add(`TOTAL: ${money(items.reduce((sum, item) => sum + item.price * item.quantity, 0))}`, "total");
-  if (customer.deliveryMethod !== "RECOGER") add("Costo de entrega no incluido; por confirmar.");
+  const { subtotal, deliveryFee, total } = calculateOrderTotal(
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    customer.deliveryMethod === "RECOGER" ? "pickup" : "delivery",
+  );
+  add(`Subtotal: ${money(subtotal)}`);
+  add(`${customer.deliveryMethod === "RECOGER" ? "Recogida" : "Envío"}: ${money(deliveryFee)}`);
+  add(`TOTAL: ${money(total)}`, "total");
   add("Gracias por elegir ARA LOT.", "heading");
   add("Realizamos nuestros envíos los fines de semana.");
   return rows;

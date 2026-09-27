@@ -10,6 +10,7 @@ const shopLinks = [
   { label: "Combos", href: "/#categories-title" },
   { label: "Ofertas", href: "/#new-products" },
 ] as const;
+const helpDestinations: Record<string, string> = { "Envíos y entregas": "/envios", "Cambios y devoluciones": "/cambios", "Términos y condiciones": "/terminos", "Política de privacidad": "/privacidad" };
 const helpLinks = ["Preguntas frecuentes", "Envíos y entregas", "Cambios y devoluciones", "Términos y condiciones", "Política de privacidad"];
 
 type IconName = "instagram" | "mail" | "whatsapp" | "truck" | "shield" | "support" | "location";
@@ -57,7 +58,7 @@ export function SiteFooter() {
           </nav>
           <section className={styles.column} id="footer-help" aria-labelledby="help-links-title">
             <h2 id="help-links-title">AYUDA</h2>
-            <ul>{helpLinks.map(label => <li key={label}><span className={styles.pending}>{label}</span></li>)}</ul>
+            <ul>{helpLinks.map(label => <li key={label}>{helpDestinations[label] ? <Link href={helpDestinations[label]}>{label}</Link> : <span className={styles.pending}>{label}</span>}</li>)}</ul>
           </section>
           <section className={styles.column} id="about" aria-labelledby="about-title">
             <h2 id="about-title">NOSOTROS</h2>

@@ -3,11 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CartItem } from "@/components/cart/CartProvider";
+import { calculateOrderTotal } from "@/lib/store-config";
 import styles from "./Checkout.module.css";
 
 type OrderSummaryProps = {
   items: CartItem[];
   subtotal: number;
+  deliveryMethod: "" | "delivery" | "pickup";
 };
 
 const priceFormatter = new Intl.NumberFormat("es-DO", {
@@ -16,7 +18,8 @@ const priceFormatter = new Intl.NumberFormat("es-DO", {
   maximumFractionDigits: 0,
 });
 
-export function OrderSummary({ items, subtotal }: OrderSummaryProps) {
+export function OrderSummary({ items, subtotal, deliveryMethod }: OrderSummaryProps) {
+  const { deliveryFee, total } = calculateOrderTotal(subtotal, deliveryMethod);
   const formattedSubtotal = priceFormatter.format(subtotal);
 
   return (
@@ -68,18 +71,15 @@ export function OrderSummary({ items, subtotal }: OrderSummaryProps) {
           <dd>{formattedSubtotal}</dd>
         </div>
         <div>
-          <dt>Entrega</dt>
-          <dd>Por confirmar</dd>
+          <dt>{deliveryMethod === "pickup" ? "Recogida" : "Envío"}</dt>
+          <dd>{deliveryMethod ? priceFormatter.format(deliveryFee) : "Selecciona un método de entrega"}</dd>
         </div>
         <div className={styles.provisionalTotal}>
-          <dt>Total provisional</dt>
-          <dd>{formattedSubtotal}</dd>
+          <dt>TOTAL</dt>
+          <dd>{deliveryMethod ? priceFormatter.format(total) : "—"}</dd>
         </div>
       </dl>
 
-      <p className={styles.deliveryDisclaimer}>
-        El costo de entrega todavía no está incluido.
-      </p>
     </aside>
   );
 }

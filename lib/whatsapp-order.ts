@@ -1,3 +1,4 @@
+import { calculateOrderTotal } from "@/lib/store-config";
 import type { CartItem } from "@/components/cart/CartProvider";
 
 export type CustomerDetails = {
@@ -32,14 +33,18 @@ export function buildWhatsAppUrl(
     `Precio unitario: ${price(item.price)}`,
     `Subtotal: ${price(item.price * item.quantity)}`,
   ].filter(Boolean).join("\n")).join("\n\n");
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { subtotal, deliveryFee, total } = calculateOrderTotal(
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    customer.deliveryMethod === "RECOGER" ? "pickup" : "delivery",
+  );
   const message = [
     "Hola, quiero realizar el siguiente pedido:",
     ...(receipt ? [`Pedido: ${receipt.id} (referencia local)`, `Fecha y hora: ${receipt.date}`] : []),
     "", "PEDIDO", "--------------------", "", products, "",
     "--------------------",
-    `TOTAL PROVISIONAL: ${price(total)}`,
-    ...(customer.deliveryMethod === "RECOGER" ? [] : ["Entrega no incluida; por confirmar."]),
+    `Subtotal: ${price(subtotal)}`,
+    `${customer.deliveryMethod === "RECOGER" ? "Recogida" : "Envío"}: ${price(deliveryFee)}`,
+    `TOTAL: ${price(total)}`,
     "", "DATOS DEL CLIENTE", "",
     `Nombre: ${customer.name}`,
     `Teléfono: ${customer.phone}`,

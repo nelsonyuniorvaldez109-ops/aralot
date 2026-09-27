@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { useFavorites } from "@/components/favorites/FavoritesProvider";
-import type { Product } from "@/data/products";
+import { getProductImage, type Product } from "@/data/products";
 import styles from "./ProductDetail.module.css";
 
 type ProductDetailProps = {
@@ -35,6 +35,8 @@ export function ProductDetail({
   const [quantity, setQuantity] = useState(1);
   const [feedback, setFeedback] = useState("");
   const favorite = isFavorite(product.id);
+  const selectedImage = getProductImage(product, selectedColor);
+  const imageAvailable = hasImage || Boolean(selectedColor && product.imagesByColor?.[selectedColor]);
 
   const price = priceFormatter.format(product.price);
   const compareAtPrice = product.compareAtPrice
@@ -56,8 +58,8 @@ export function ProductDetail({
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      image: product.image,
-      imageAvailable: hasImage,
+      image: selectedImage,
+      imageAvailable,
       price: product.price,
       quantity,
       selectedColor,
@@ -70,9 +72,9 @@ export function ProductDetail({
   return (
     <article className={styles.product}>
       <div className={styles.gallery}>
-        {hasImage ? (
+        {imageAvailable ? (
           <Image
-            src={product.image}
+            src={selectedImage}
             alt={`${product.name}, producto de ARA LOT`}
             fill
             priority

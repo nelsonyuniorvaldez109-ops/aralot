@@ -1,0 +1,51 @@
+.policy {
+  width: 100%;
+  max-width: 48rem;
+  min-width: 0;
+  margin-inline: auto;
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 3vw, 2rem);
+  background: #f5f5f5;
+  color: #000000;
+  font-family: "Times New Roman", Times, serif;
+  overflow-wrap: anywhere;
+}
+
+.policy h1 {
+  margin: 0 0 2rem;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.policy h2 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.375rem, 3vw, 1.625rem);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.policy p {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.65;
+}
+
+.policy section {
+  margin-top: 2.75rem;
+}
+
+.policy p:last-child {
+  margin-bottom: 0;
+}
+
+.policy ul {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+  list-style: disc;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.65;
+}
+
+.policy li + li {
+  margin-top: 0.35rem;
+}

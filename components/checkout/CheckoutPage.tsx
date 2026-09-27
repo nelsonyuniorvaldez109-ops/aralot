@@ -399,7 +399,7 @@ export function CheckoutPage() {
             {deliveryMethod ? (
               <p className={styles.methodNote} aria-live="polite">
                 {deliveryMethod === "delivery"
-                  ? "El costo de entrega será confirmado con el pedido."
+                  ? "El costo de envío está incluido en el total del resumen."
                   : "El lugar y horario de recogida serán coordinados directamente con ARA LOT por WhatsApp."}
               </p>
             ) : null}
@@ -420,7 +420,7 @@ export function CheckoutPage() {
           ) : null}
         </form>
 
-        <OrderSummary items={items} subtotal={subtotal} />
+        <OrderSummary items={items} subtotal={subtotal} deliveryMethod={deliveryMethod} />
       </div>
       {receipt && JSON.stringify(receipt.items) === JSON.stringify(items) && (
         <ReceiptPreview key={receipt.id} receipt={receipt} />

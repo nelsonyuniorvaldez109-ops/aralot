@@ -14,6 +14,7 @@ export type Product = {
   price: number;
   compareAtPrice?: number;
   image: string;
+  imagesByColor?: Partial<Record<string, string>>;
   colors?: string[];
   sizes?: string[];
   presentation?: string;
@@ -30,6 +31,7 @@ export const newProducts: Product[] = [
       "Una pieza esencial de líneas limpias, creada para acompañar el estilo diario del hombre ARA LOT.",
     price: 1200,
     image: "/images/products/poloch-basico.webp.png",
+    imagesByColor: { Blanco: "/images/products/poloch-basico.webp.png" },
     colors: ["Negro", "Blanco", "Gris"],
     sizes: ["S", "M", "L", "XL"],
   },
@@ -43,6 +45,7 @@ export const newProducts: Product[] = [
     price: 1190,
     compareAtPrice: 1400,
     image: "/images/products/poloch-premium.webp.png",
+    imagesByColor: { Negro: "/images/products/poloch-premium.webp.png" },
     colors: ["Negro", "Blanco"],
     sizes: ["S", "M", "L", "XL"],
     badge: "-15%",
@@ -70,3 +73,9 @@ export const newProducts: Product[] = [
     presentation: "300 ml",
   },
 ];
+
+export function getProductImage(product: Product, color?: string): string {
+  return (color && product.colors?.includes(color)
+    ? product.imagesByColor?.[color]
+    : undefined) ?? product.image;
+}
