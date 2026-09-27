@@ -33,17 +33,13 @@ export function ProductCard({
   return (
     <article className={styles.card}>
       <div className={styles.media}>
-        <Link
-          className={styles.productLink}
-          href={`/productos/${product.slug}`}
-          aria-label={`Ver detalle de ${product.name}`}
-        >
+        <div className={styles.productLink}>
           {hasImage ? (
             <Image
               src={product.image}
               alt={`${product.name}, producto de ARA LOT`}
               fill
-              sizes="(max-width: 359px) 100vw, (max-width: 1199px) 50vw, 25vw"
+              sizes="(max-width: 1199px) 50vw, 25vw"
               className={styles.image}
             />
           ) : (
@@ -52,7 +48,7 @@ export function ProductCard({
               aria-hidden="true"
             />
           )}
-        </Link>
+        </div>
 
         {product.badge ? (
           <span className={styles.badge}>{product.badge}</span>
