@@ -22,10 +22,11 @@
 .heading h2 {
   max-width: 34rem;
   margin: 0;
-  font-size: clamp(1.75rem, 3vw, 3rem);
-  font-weight: var(--weight-semibold);
-  line-height: 1.08;
-  letter-spacing: -0.04em;
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  color: #000000;
   text-align: right;
 }
 
@@ -43,11 +44,13 @@
   display: block;
 }
 
+/* Contenedor adaptado al formato horizontal de las imágenes */
 .media {
   position: relative;
-  aspect-ratio: 3 / 4;
+  width: 100%;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .image,
@@ -59,8 +62,10 @@
   transition: transform 500ms cubic-bezier(0.2, 0.65, 0.3, 1);
 }
 
+/* La imagen llena completamente el contenedor */
 .image {
   object-fit: cover;
+  object-position: center;
   filter: none;
 }
 
@@ -85,7 +90,7 @@
 }
 
 .placeholder2 {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .placeholder2::before {
@@ -94,7 +99,7 @@
 }
 
 .placeholder3 {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .placeholder3::before {
@@ -105,7 +110,7 @@
 }
 
 .placeholder4 {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .placeholder4::before {
@@ -124,9 +129,10 @@
 
 .meta h3 {
   margin: 0;
-  font-size: clamp(0.875rem, 1.2vw, 1rem);
+  font-size: var(--text-h3);
   font-weight: var(--weight-semibold);
-  letter-spacing: 0.05em;
+  line-height: 1.25;
+  letter-spacing: 0;
 }
 
 .cta {
@@ -135,7 +141,7 @@
   gap: 0.55rem;
   margin-top: 0.65rem;
   color: var(--color-muted);
-  font-size: var(--text-secondary);
+  font-size: var(--text-control);
 }
 
 .cta > span {
@@ -147,6 +153,14 @@
   transform: translateX(0.2rem);
 }
 
+/* Título CATEGORÍAS */
+.heading .eyebrow {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 30px;
+  color: #000000;
+}
+
+/* TABLET */
 @media (max-width: 74.999rem) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -154,10 +168,11 @@
   }
 
   .media {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 3;
   }
 }
 
+/* CELULAR */
 @media (max-width: 39.999rem) {
   .section {
     padding-block: 4rem;
@@ -167,9 +182,13 @@
     display: block;
   }
 
+  .heading .eyebrow {
+    font-size: 24px;
+  }
+
   .heading h2 {
     margin-top: 0.9rem;
-    font-size: 2rem;
+    font-size: 17px;
     text-align: left;
   }
 
@@ -179,30 +198,6 @@
   }
 
   .media {
-    aspect-ratio: 5 / 6;
+    aspect-ratio: 4 / 3;
   }
-}
-
-.image { object-fit: contain; }
-
-/* Shared typography scale. */
-.heading h2 { font-size: var(--text-h2); line-height: var(--leading-heading); }
-.meta h3 { font-size: var(--text-h3); line-height: 1.25; letter-spacing: 0; }
-.cta { font-size: var(--text-control); }
-
-/* Category section heading only. */
-.heading .eyebrow {
-  font-family: "Times New Roman", Times, serif;
-  font-size: 30px;
-  color: #000000;
-}
-.heading h2 {
-  font-family: "Times New Roman", Times, serif;
-  font-size: 20px;
-  font-weight: 400;
-  color: #000000;
-}
-@media (max-width: 39.999rem) {
-  .heading .eyebrow { font-size: 24px; }
-  .heading h2 { font-size: 17px; }
 }
