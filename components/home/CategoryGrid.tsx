@@ -1,90 +1,96 @@
 import Image from "next/image";
 import Link from "next/link";
-import { existsSync } from "node:fs";
-import path from "node:path";
+import { createClient } from "@/lib/supabase/server";
 import styles from "./CategoryGrid.module.css";
 
-const categories = [
-  {
-    name: "POLOCHES",
-    cta: "Ver colección",
-    image: "/images/categories/poloches.webp",
-    href: "/productos?categoria=poloches",
-    alt: "Selección de poloches para hombre",
-  },
-  {
-    name: "CUIDADO PERSONAL",
-    cta: "Ver productos",
-    image: "/images/categories/personal-care.webp",
-    href: "/productos?categoria=cuidado-personal",
-    alt: "Productos de cuidado personal para hombre",
-  },
-  {
-    name: "NUEVA COLECCIÓN",
-    cta: "Descubrir",
-    image: "/images/categories/new-collection.webp",
-    href: "/productos?categoria=nueva-coleccion",
-    alt: "Nueva colección de ARA LOT para hombre",
-  },
-  {
-    name: "COMBOS",
-    cta: "Ver ofertas",
-    image: "/images/categories/combos.webp",
-    href: "/productos?categoria=combos",
-    alt: "Combos de ropa y cuidado personal para hombre",
-  },
-] as const;
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  image_url: string | null;
+  sort_order: number;
+};
 
-export function CategoryGrid() {
+const categoryCta: Record<string, string> = {
+  poloches: "Ver colección",
+  "cuidado-personal": "Ver productos",
+  "nueva-coleccion": "Descubrir",
+  combos: "Ver ofertas",
+};
+
+export async function CategoryGrid() {
+  const supabase = await createClient();
+
+  const { data: categories, error } = await supabase
+    .from("categories")
+    .select("id,name,slug,image_url,sort_order")
+    .eq("active", true)
+    .order("sort_order", { ascending: true })
+    .returns<Category[]>();
+
+  if (error) {
+    console.error("Error cargando categorías:", error);
+  }
+
   return (
-    <section className={styles.section} aria-labelledby="categories-title">
+    <section
+      className={styles.section}
+      aria-labelledby="categories-title"
+    >
       <div className="container">
         <div className={styles.heading}>
           <p className={styles.eyebrow}>CATEGORÍAS</p>
-          <h2 id="categories-title">Esenciales para tu estilo</h2>
+
+          <h2 id="categories-title">
+            Esenciales para tu estilo
+          </h2>
         </div>
 
         <div className={styles.grid}>
-          {categories.map((category, index) => {
-            const hasImage = existsSync(
-              path.join(process.cwd(), "public", category.image.slice(1)),
-            );
+          {categories?.map((category, index) => (
+            <article
+              className={styles.card}
+              key={category.id}
+            >
+              <Link
+                className={styles.link}
+                href={`/productos?categoria=${category.slug}`}
+                aria-label={`Ver ${category.name.toLocaleLowerCase("es")}`}
+              >
+                <div className={styles.media}>
+                  {category.image_url ? (
+                    <Image
+                      src={category.image_url}
+                      alt={category.name}
+                      fill
+                      sizes="(max-width: 639px) 100vw, (max-width: 1199px) 50vw, 25vw"
+                      className={styles.image}
+                    />
+                  ) : (
+                    <div
+                      className={`${styles.placeholder} ${
+                        styles[
+                          `placeholder${(index % 4) + 1}`
+                        ]
+                      }`}
+                      aria-hidden="true"
+                    />
+                  )}
+                </div>
 
-            return (
-              <article className={styles.card} key={category.name}>
-                <Link
-                  className={styles.link}
-                  href={category.href}
-                  aria-label={`${category.cta}: ${category.name.toLocaleLowerCase("es")}`}
-                >
-                  <div className={styles.media}>
-                    {hasImage ? (
-                      <Image
-                        src={category.image}
-                        alt={category.alt}
-                        fill
-                        sizes="(max-width: 639px) 100vw, (max-width: 1199px) 50vw, 25vw"
-                        className={styles.image}
-                      />
-                    ) : (
-                      <div
-                        className={`${styles.placeholder} ${styles[`placeholder${index + 1}`]}`}
-                        aria-hidden="true"
-                      />
-                    )}
-                  </div>
+                <div className={styles.meta}>
+                  <h3>{category.name.toUpperCase()}</h3>
 
-                  <div className={styles.meta}>
-                    <h3>{category.name}</h3>
-                    <span className={styles.cta}>
-                      {category.cta}
-                      <span aria-hidden="true">→</span>
-                    </span>
-                  </div>
-                </Link>
-              </article>
-            );
-          })}
+                  <span className={styles.cta}>
+                    {categoryCta[category.slug] ??
+                      "Ver productos"}
+
+                    <span aria-hidden="true">→</span>
+                  </span>
+                </div>
+              </Link>
+            </article>
+          ))}
         </div>
       </div>
     </section>

@@ -9,10 +9,10 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { newProducts } from "@/data/products";
+import { useCatalog } from "@/components/product/CatalogProvider";
 
 const STORAGE_KEY = "ara-lot-favorites";
-const validProductIds = new Set(newProducts.map((product) => product.id));
+
 
 type FavoritesContextValue = {
   favoriteIds: string[];
@@ -24,7 +24,7 @@ type FavoritesContextValue = {
 
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
-function readStoredFavorites() {
+function readStoredFavorites(validProductIds: Set<string>) {
   try {
     const storedFavorites = window.localStorage.getItem(STORAGE_KEY);
     if (!storedFavorites) return [];
@@ -46,22 +46,25 @@ function readStoredFavorites() {
 }
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
+  const { products, error } = useCatalog();
+  const validProductIds = useMemo(() => new Set(products.map(p => p.id)), [products]);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (error) return;
     const frame = window.requestAnimationFrame(() => {
-      setFavoriteIds(readStoredFavorites());
+      setFavoriteIds(readStoredFavorites(validProductIds));
       setReady(true);
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, []);
+  }, [validProductIds, error]);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || error) return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteIds));
-  }, [favoriteIds, ready]);
+  }, [favoriteIds, ready, error]);
 
   const toggleFavorite = useCallback((productId: string) => {
     if (!validProductIds.has(productId)) return;
@@ -71,7 +74,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         ? currentIds.filter((currentId) => currentId !== productId)
         : [...currentIds, productId],
     );
-  }, []);
+  }, [validProductIds]);
 
   const isFavorite = useCallback(
     (productId: string) => favoriteIds.includes(productId),

@@ -7,7 +7,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import { newProducts } from "@/data/products";
+import { useCatalog } from "@/components/product/CatalogProvider";
 import styles from "./SearchOverlay.module.css";
 
 type SearchOverlayProps = {
@@ -21,13 +21,14 @@ const priceFormatter = new Intl.NumberFormat("es-DO", {
 });
 
 export function SearchOverlay({ onClose }: SearchOverlayProps) {
+  const { products, error } = useCatalog();
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const normalizedQuery = query.trim().toLocaleLowerCase("es");
   const results = normalizedQuery
-    ? newProducts.filter((product) =>
+    ? products.filter((product) =>
         `${product.name} ${product.category}`
           .toLocaleLowerCase("es")
           .includes(normalizedQuery),
@@ -114,7 +115,7 @@ export function SearchOverlay({ onClose }: SearchOverlayProps) {
           </div>
 
           <div className={styles.results} aria-live="polite">
-            {!normalizedQuery ? (
+            {error ? <p role="status">{error}</p> : !normalizedQuery ? (
               <p className={styles.message}>Escribe para buscar productos.</p>
             ) : results.length === 0 ? (
               <p className={styles.message}>

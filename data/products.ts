@@ -1,3 +1,4 @@
+import type { CatalogVariant } from "@/lib/products/catalog";
 export const productCategories = {
   poloches: "Poloches",
   "cuidado-personal": "Cuidado Personal",
@@ -9,7 +10,10 @@ export type Product = {
   id: string;
   slug: string;
   name: string;
-  category: (typeof productCategories)[keyof typeof productCategories];
+  category: string;
+  categorySlug?: string;
+  variants?: CatalogVariant[];
+  presentations?: string[];
   description: string;
   price: number;
   compareAtPrice?: number;

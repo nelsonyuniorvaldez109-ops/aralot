@@ -1,30 +1,27 @@
 import type { Metadata } from "next";
-import { existsSync } from "node:fs";
-import path from "node:path";
 import {
   FavoritesPage,
   type FavoriteProduct,
 } from "@/components/favorites/FavoritesPage";
-import { newProducts } from "@/data/products";
+import { getProducts } from "@/lib/products/server";
 
 export const metadata: Metadata = {
   title: "Favoritos | ARA LOT",
   description: "Consulta tus productos favoritos de ARA LOT.",
 };
 
-export default function FavoritesRoute() {
-  const products: FavoriteProduct[] = newProducts.map((product, index) => ({
+export default async function FavoritesRoute() {
+  const catalog = await getProducts();
+  const products: FavoriteProduct[] = catalog.products.map((product, index) => ({
     product,
-    hasImage: existsSync(
-      path.join(process.cwd(), "public", product.image.slice(1)),
-    ),
+    hasImage: Boolean(product.image),
     placeholderVariant: index + 1,
   }));
 
   return (
     <main id="storefront" tabIndex={-1}>
       <div className="container">
-        <FavoritesPage products={products} />
+        {catalog.error ? <p role="status">{catalog.error}</p> : <FavoritesPage products={products} />}
       </div>
     </main>
   );

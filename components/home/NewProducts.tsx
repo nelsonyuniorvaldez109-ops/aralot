@@ -1,11 +1,10 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
 import Link from "next/link";
 import { ProductCard } from "@/components/product/ProductCard";
-import { newProducts } from "@/data/products";
+import { getProducts } from "@/lib/products/server";
 import styles from "./NewProducts.module.css";
 
-export function NewProducts() {
+export async function NewProducts() {
+  const { products, error } = await getProducts();
   return (
     <section
       className={styles.section}
@@ -24,11 +23,10 @@ export function NewProducts() {
           </Link>
         </div>
 
+        {error && <p role="status">{error}</p>}
         <div className={styles.grid}>
-          {newProducts.map((product, index) => {
-            const hasImage = existsSync(
-              path.join(process.cwd(), "public", product.image.slice(1)),
-            );
+          {products.slice(0, 4).map((product, index) => {
+            const hasImage = Boolean(product.image);
 
             return (
               <ProductCard

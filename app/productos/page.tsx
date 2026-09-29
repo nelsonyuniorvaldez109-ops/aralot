@@ -1,22 +1,10 @@
-import { Suspense } from "react";
-import { existsSync } from "node:fs";
-import path from "node:path";
-import { newProducts } from "@/data/products";
+import { getProducts } from "@/lib/products/server";
 import ProductCatalog from "./ProductCatalog";
 import styles from "./Products.module.css";
-
-export default function ProductsPage() {
-  const products = newProducts.map((product, index) => ({
-    product,
-    hasImage: existsSync(path.join(process.cwd(), "public", product.image.slice(1))),
-    placeholderVariant: index + 1,
-  }));
-
-  return (
-    <div className={`container ${styles.page}`}>
-      <Suspense fallback={<p role="status">Cargando productos…</p>}>
-        <ProductCatalog products={products} />
-      </Suspense>
-    </div>
-  );
+export default async function ProductsPage({searchParams}:{searchParams:Promise<{categoria?:string|string[]}>}) {
+ const params=await searchParams;
+ const category=typeof params.categoria==="string"?params.categoria:undefined;
+ const result=await getProducts(category);
+ const products=result.products.map((product,index)=>({product,hasImage:Boolean(product.image),placeholderVariant:index%4+1}));
+ return <div className={`container ${styles.page}`}>{result.error?<p role="status">{result.error}</p>:<ProductCatalog products={products} categoryKey={category}/>}</div>;
 }

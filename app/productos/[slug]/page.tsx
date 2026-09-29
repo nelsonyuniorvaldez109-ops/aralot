@@ -1,29 +1,19 @@
 import type { Metadata } from "next";
-import { existsSync } from "node:fs";
-import path from "node:path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/components/product/ProductDetail";
-import { newProducts } from "@/data/products";
+import { getProduct } from "@/lib/products/server";
 import styles from "./ProductPage.module.css";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-function findProduct(slug: string) {
-  return newProducts.find((product) => product.slug === slug);
-}
-
-export function generateStaticParams() {
-  return newProducts.map((product) => ({ slug: product.slug }));
-}
-
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = findProduct(slug);
+  const product = await getProduct(slug);
 
   if (!product) notFound();
 
@@ -35,14 +25,12 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = findProduct(slug);
+  const product = await getProduct(slug);
 
   if (!product) notFound();
 
-  const hasImage = existsSync(
-    path.join(process.cwd(), "public", product.image.slice(1)),
-  );
-  const placeholderVariant = newProducts.findIndex((item) => item.id === product.id) + 1;
+  const hasImage = Boolean(product.image);
+  const placeholderVariant = 1;
 
   return (
     <main className={styles.main} id="storefront" tabIndex={-1}>
@@ -60,6 +48,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </nav>
 
         <ProductDetail
+          key={product.id}
           product={product}
           hasImage={hasImage}
           placeholderVariant={placeholderVariant}

@@ -1,4 +1,5 @@
 "use client";
+import { selectedVariant } from "@/lib/products/catalog";
 
 import Image from "next/image";
 import { useState } from "react";
@@ -32,11 +33,15 @@ export function ProductDetail({
   } = useFavorites();
   const [selectedColor, setSelectedColor] = useState<string>();
   const [selectedSize, setSelectedSize] = useState<string>();
+  const [selectedPresentation, setSelectedPresentation] = useState<string | undefined>(product.presentation);
   const [quantity, setQuantity] = useState(1);
   const [feedback, setFeedback] = useState("");
   const favorite = isFavorite(product.id);
-  const selectedImage = getProductImage(product, selectedColor);
-  const imageAvailable = hasImage || Boolean(selectedColor && product.imagesByColor?.[selectedColor]);
+  const variant = selectedVariant(product, selectedColor, selectedSize, selectedPresentation);
+  const stock = variant?.stock ?? 0;
+  const anyStock = product.variants?.some(v => v.stock > 0) ?? false;
+  const selectedImage = variant?.image || getProductImage(product, selectedColor);
+  const imageAvailable = Boolean(selectedImage) && (hasImage || Boolean(variant?.image || (selectedColor && product.imagesByColor?.[selectedColor])));
 
   const price = priceFormatter.format(product.price);
   const compareAtPrice = product.compareAtPrice
@@ -49,12 +54,18 @@ export function ProductDetail({
     if (product.colors && !selectedColor) missingSelections.push("un color");
     if (product.sizes && !selectedSize) missingSelections.push("una talla");
 
+    if (product.presentations?.length && !selectedPresentation) missingSelections.push("una presentaci\u00f3n");
+
     if (missingSelections.length > 0) {
       setFeedback(`Selecciona ${missingSelections.join(" y ")} antes de continuar.`);
       return;
     }
 
-    addItem({
+    if (!variant || stock < 1 || quantity > stock) {
+      setFeedback("Esta combinaci\u00f3n no tiene unidades suficientes disponibles.");
+      return;
+    }
+    const added = addItem({
       productId: product.id,
       slug: product.slug,
       name: product.name,
@@ -64,9 +75,9 @@ export function ProductDetail({
       quantity,
       selectedColor,
       selectedSize,
-      presentation: product.presentation,
+      presentation: selectedPresentation,
     });
-    setFeedback("Producto agregado al carrito");
+    setFeedback(added ? "Producto agregado al carrito" : "No se pueden agregar m\u00e1s unidades de este producto.");
   }
 
   return (
@@ -121,9 +132,12 @@ export function ProductDetail({
                   className={styles.option}
                   type="button"
                   key={color}
+                  disabled={!product.variants?.some(v => v.color === color && v.stock > 0)}
                   aria-pressed={selectedColor === color}
                   onClick={() => {
                     setSelectedColor(color);
+                    setSelectedSize(undefined);
+                    setQuantity(1);
                     setFeedback("");
                   }}
                 >
@@ -146,9 +160,11 @@ export function ProductDetail({
                   className={`${styles.option} ${styles.sizeOption}`}
                   type="button"
                   key={size}
+                  disabled={!product.variants?.some(v => v.size === size && (!selectedColor || v.color === selectedColor) && v.stock > 0)}
                   aria-pressed={selectedSize === size}
                   onClick={() => {
                     setSelectedSize(size);
+                    setQuantity(1);
                     setFeedback("");
                   }}
                 >
@@ -156,6 +172,20 @@ export function ProductDetail({
                 </button>
               ))}
             </div>
+          </fieldset>
+        ) : null}
+
+        {product.presentations && product.presentations.length > 1 ? (
+          <fieldset className={styles.optionGroup}>
+            <legend>Presentación</legend>
+            <div className={styles.options}>{product.presentations.map(presentation => (
+              <button key={presentation} type="button" className={styles.option}
+                aria-pressed={selectedPresentation === presentation}
+                disabled={!product.variants?.some(v => v.presentation === presentation && v.stock > 0)}
+                onClick={() => { setSelectedPresentation(presentation); setQuantity(1); setFeedback(""); }}>
+                {presentation}
+              </button>
+            ))}</div>
           </fieldset>
         ) : null}
 
@@ -182,6 +212,7 @@ export function ProductDetail({
             <button
               type="button"
               aria-label="Aumentar cantidad"
+              disabled={quantity >= Math.min(20, stock) || !variant}
               onClick={() => setQuantity((current) => current + 1)}
             >
               +
@@ -191,7 +222,7 @@ export function ProductDetail({
           <button
             className={styles.addButton}
             type="button"
-            disabled={!cartReady}
+            disabled={!cartReady || !anyStock}
             onClick={handleAddToCart}
           >
             Agregar al carrito
@@ -216,7 +247,7 @@ export function ProductDetail({
         </div>
 
         <p className={styles.feedback} role="status" aria-live="polite">
-          {feedback}
+          {feedback || (!anyStock ? "Producto agotado" : variant && stock === 0 ? "Combinaci\u00f3n agotada" : "")}
         </p>
       </div>
     </article>
