@@ -48,13 +48,14 @@ export function AdminNavigation() {
       href: "/admin/categorias",
       icon: 2,
     },
+    {
+      label: "Inventario",
+      href: "/admin/inventario",
+      icon: 3,
+    },
   ];
 
   const comingSoonItems = [
-    {
-      label: "Inventario",
-      icon: 3,
-    },
     {
       label: "Promociones",
       icon: 4,

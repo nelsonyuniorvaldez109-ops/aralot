@@ -1,12 +1,14 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useCart } from "@/components/cart/CartProvider";
 import { WHATSAPP_NUMBER } from "@/lib/store-config";
 import { buildWhatsAppUrl } from "@/lib/whatsapp-order";
 import { receiptImage, receiptRows, type Receipt } from "./receipt";
 import styles from "./ReceiptPreview.module.css";
 
 export function ReceiptPreview({ receipt }: { receipt: Receipt }) {
+  const { items, removeItem } = useCart();
   const heading = useRef<HTMLHeadingElement>(null);
   const [image, setImage] = useState<{ file: File; url: string }>();
   const [message, setMessage] = useState("");
@@ -54,9 +56,13 @@ export function ReceiptPreview({ receipt }: { receipt: Receipt }) {
       <div className={styles.actions}>
         <button type="button" disabled={!image || sharing} onClick={share}>Compartir imagen</button>
         <button type="button" disabled={!image} onClick={download}>Descargar recibo</button>
-        {whatsapp && <a href={whatsapp} target="_blank" rel="noopener noreferrer">Abrir pedido en WhatsApp</a>}
+        {whatsapp && <a href={whatsapp} target="_blank" rel="noopener noreferrer" onClick={(event) => {
+          event.preventDefault();
+          window.open(whatsapp, "_blank", "noopener,noreferrer");
+          items.forEach((item) => removeItem(item.key));
+        }}>Abrir pedido en WhatsApp</a>}
       </div>
-      <p>WhatsApp abrirá el resumen de texto. Puedes adjuntar la imagen descargada o compartirla desde tu dispositivo. Tu carrito se conserva.</p>
+      <p>WhatsApp abrirá el resumen de texto. Puedes adjuntar la imagen descargada o compartirla desde tu dispositivo.</p>
       <p role="status" aria-live="polite">{message || (!image ? "Preparando imagen del recibo…" : "Recibo listo para compartir o guardar.")}</p>
     </section>
   );

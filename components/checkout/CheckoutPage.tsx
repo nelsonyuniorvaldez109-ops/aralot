@@ -57,6 +57,8 @@ export function CheckoutPage() {
   const [errors, setErrors] = useState<CheckoutErrors>({});
   const [feedback, setFeedback] = useState("");
   const [receipt, setReceipt] = useState<Receipt>();
+  const [processing, setProcessing] = useState(false);
+  const [checkoutId] = useState(() => crypto.randomUUID());
 
   function clearError(field: CheckoutField) {
     setErrors((current) => {
@@ -75,7 +77,7 @@ export function CheckoutPage() {
     });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -129,16 +131,74 @@ export function CheckoutPage() {
       deliveryMethod: deliveryMethod === "pickup" ? "RECOGER" : "ENVÍO",
     };
 
-    const now = new Date();
-    const random = Array.from(crypto.getRandomValues(new Uint32Array(2)), value => value.toString(36)).join("").toUpperCase();
-    setReceipt({
-      id: `ARA-${now.getTime().toString(36).toUpperCase()}-${random}`,
-      date: now.toLocaleString("es-DO", { dateStyle: "medium", timeStyle: "short" }),
-      customer,
-      items: items.map(item => ({ ...item })),
-    });
+    const invalidVariant = items.some(
+  (item) =>
+    !item.variantId ||
+    !Number.isInteger(item.quantity) ||
+    item.quantity < 1
+);
+
+if (invalidVariant) {
+  setFeedback(
+    "Uno de los productos del carrito no tiene una variante válida. Elimínalo y agrégalo nuevamente."
+  );
+  return;
+}
+
+setProcessing(true);
+setFeedback("");
+
+try {
+  const response = await fetch("/api/checkout/inventory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      checkoutId,
+      items: items.map((item) => ({
+        variantId: item.variantId,
+        quantity: item.quantity,
+      })),
+    }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok || !result.success) {
+    setFeedback(
+      result.error ??
+        "No se pudo confirmar el inventario. Revisa tu carrito e inténtalo nuevamente."
+    );
+    return;
   }
 
+  const now = new Date();
+
+  const random = Array.from(
+    crypto.getRandomValues(new Uint32Array(2)),
+    (value) => value.toString(36)
+  )
+    .join("")
+    .toUpperCase();
+
+  setReceipt({
+    id: `ARA-${now.getTime().toString(36).toUpperCase()}-${random}`,
+    date: now.toLocaleString("es-DO", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }),
+    customer,
+    items: items.map((item) => ({ ...item })),
+  });
+} catch {
+  setFeedback(
+    "No se pudo confirmar el pedido. Verifica tu conexión e inténtalo nuevamente."
+  );
+} finally {
+  setProcessing(false);
+}
+}
   if (!ready) {
     return (
       <section className={styles.loading} aria-live="polite">
@@ -405,8 +465,14 @@ export function CheckoutPage() {
             ) : null}
           </fieldset>
 
-          <button className={styles.submitButton} type="submit">
-            FINALIZAR PEDIDO POR WHATSAPP
+          <button
+            className={styles.submitButton}
+            type="submit"
+            disabled={processing}
+          >
+            {processing
+              ? "CONFIRMANDO PEDIDO..."
+              : "FINALIZAR PEDIDO POR WHATSAPP"}
           </button>
 
           <p className={styles.privacy}>
