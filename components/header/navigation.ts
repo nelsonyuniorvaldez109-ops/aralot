@@ -1,10 +1,9 @@
-// Use existing product pages and homepage sections until category pages exist.
 export const navigationItems = [
   { label: "Inicio", href: "/", current: true },
-  { label: "Poloches", href: "/productos/poloch-basico-ara-lot" },
-  { label: "Cuidado Personal", href: "/productos/shampoo-ara-lot" },
-  { label: "Nueva Colección", href: "/#new-products" },
-  { label: "Combos", href: "/#categories-title" },
-  { label: "Ofertas", href: "/productos/poloch-premium-ara-lot" },
+  { label: "Poloches", href: "/productos?categoria=poloches" },
+  { label: "Cuidado Personal", href: "/productos?categoria=cuidado-personal" },
+  { label: "Nueva Colección", href: "/productos?categoria=nueva-coleccion" },
+  { label: "Combos", href: "/productos?categoria=combos" },
+  { label: "Ofertas", href: "/#new-products" },
   { label: "Nosotros", href: "/#about" },
 ] as const;
