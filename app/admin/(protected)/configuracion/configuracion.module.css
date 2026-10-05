@@ -1,0 +1,331 @@
+.page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 0 40px;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.heading h1 {
+  margin: 4px 0 8px;
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #111111;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #666666;
+}
+
+.description {
+  max-width: 700px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666666;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.card {
+  padding: 26px;
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+  border-radius: 12px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.cardHeader h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #111111;
+}
+
+.cardHeader p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #6b6b6b;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111111;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.field input {
+  min-height: 44px;
+  padding: 0 13px;
+}
+
+.field textarea {
+  min-height: 90px;
+  padding: 12px 13px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #111111;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #9a9a9a;
+}
+
+.field small {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #777777;
+}
+
+.switchField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 68px;
+  padding: 14px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.switchField > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.switchField strong {
+  font-size: 14px;
+  color: #171717;
+}
+
+.switchField span {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #707070;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  min-width: 46px;
+  height: 26px;
+}
+
+.switch input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.switch .slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  border-radius: 999px;
+  background: #cfcfcf;
+  transition: 0.2s ease;
+}
+
+.switch .slider::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+}
+
+.switch input:checked + .slider {
+  background: #111111;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+.switch input:focus-visible + .slider {
+  outline: 2px solid #111111;
+  outline-offset: 3px;
+}
+
+.errorMessage,
+.successMessage,
+.errorBox {
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.errorMessage,
+.errorBox {
+  border: 1px solid #e7b5b5;
+  background: #fff5f5;
+  color: #8b1e1e;
+}
+
+.successMessage {
+  border: 1px solid #b8d8bd;
+  background: #f3faf4;
+  color: #245b2d;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 2px;
+}
+
+.saveButton {
+  min-width: 210px;
+  min-height: 46px;
+  padding: 12px 22px;
+  border: 1px solid #111111;
+  border-radius: 8px;
+  background: #111111;
+  color: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #333333;
+}
+
+.saveButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding-bottom: 28px;
+  }
+
+  .heading h1 {
+    font-size: 27px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: auto;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .cardHeader {
+    margin-bottom: 18px;
+    padding-bottom: 17px;
+  }
+
+  .switchField {
+    align-items: flex-start;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .saveButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 17px;
+    border-radius: 10px;
+  }
+
+  .heading {
+    margin-bottom: 22px;
+  }
+
+  .switchField {
+    gap: 16px;
+    padding: 13px;
+  }
+}

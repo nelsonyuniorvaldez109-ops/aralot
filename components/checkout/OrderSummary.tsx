@@ -10,6 +10,7 @@ type OrderSummaryProps = {
   items: CartItem[];
   subtotal: number;
   deliveryMethod: "" | "delivery" | "pickup";
+  deliveryFee: number;
 };
 
 const priceFormatter = new Intl.NumberFormat("es-DO", {
@@ -18,8 +19,18 @@ const priceFormatter = new Intl.NumberFormat("es-DO", {
   maximumFractionDigits: 0,
 });
 
-export function OrderSummary({ items, subtotal, deliveryMethod }: OrderSummaryProps) {
-  const { deliveryFee, total } = calculateOrderTotal(subtotal, deliveryMethod);
+export function OrderSummary({
+  items,
+  subtotal,
+  deliveryMethod,
+  deliveryFee,
+}: OrderSummaryProps) {
+  const { deliveryFee: appliedDeliveryFee, total } = calculateOrderTotal(
+    subtotal,
+    deliveryMethod,
+    deliveryFee
+  );
+
   const formattedSubtotal = priceFormatter.format(subtotal);
 
   return (
@@ -43,23 +54,30 @@ export function OrderSummary({ items, subtotal, deliveryMethod }: OrderSummaryPr
                   className={styles.summaryImage}
                 />
               ) : (
-                <span className={styles.summaryPlaceholder} aria-hidden="true" />
+                <span
+                  className={styles.summaryPlaceholder}
+                  aria-hidden="true"
+                />
               )}
             </Link>
 
             <div className={styles.summaryInformation}>
               <h3>{item.name}</h3>
+
               <p>
                 {[item.selectedColor, item.selectedSize, item.presentation]
                   .filter(Boolean)
                   .join(" · ")}
               </p>
+
               <span>Cantidad: {item.quantity}</span>
             </div>
 
             <div className={styles.summaryPrice}>
               <span>{priceFormatter.format(item.price)} c/u</span>
-              <strong>{priceFormatter.format(item.price * item.quantity)}</strong>
+              <strong>
+                {priceFormatter.format(item.price * item.quantity)}
+              </strong>
             </div>
           </article>
         ))}
@@ -70,16 +88,23 @@ export function OrderSummary({ items, subtotal, deliveryMethod }: OrderSummaryPr
           <dt>Subtotal</dt>
           <dd>{formattedSubtotal}</dd>
         </div>
+
         <div>
           <dt>{deliveryMethod === "pickup" ? "Recogida" : "Envío"}</dt>
-          <dd>{deliveryMethod ? priceFormatter.format(deliveryFee) : "Selecciona un método de entrega"}</dd>
+          <dd>
+            {deliveryMethod
+              ? priceFormatter.format(appliedDeliveryFee)
+              : "Selecciona un método de entrega"}
+          </dd>
         </div>
+
         <div className={styles.provisionalTotal}>
           <dt>TOTAL</dt>
-          <dd>{deliveryMethod ? priceFormatter.format(total) : "—"}</dd>
+          <dd>
+            {deliveryMethod ? priceFormatter.format(total) : "—"}
+          </dd>
         </div>
       </dl>
-
     </aside>
   );
 }

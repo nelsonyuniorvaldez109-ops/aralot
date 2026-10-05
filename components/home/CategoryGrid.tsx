@@ -1,15 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCategories } from "@/lib/products/categories";
+import { CatalogRetry } from "@/components/product/CatalogRetry";
 import styles from "./CategoryGrid.module.css";
-
-type Category = {
-  id: string;
-  name: string;
-  slug: string;
-  image_url: string | null;
-  sort_order: number;
-};
 
 const categoryCta: Record<string, string> = {
   poloches: "Ver colección",
@@ -19,18 +12,7 @@ const categoryCta: Record<string, string> = {
 };
 
 export async function CategoryGrid() {
-  const supabase = await createClient();
-
-  const { data: categories, error } = await supabase
-    .from("categories")
-    .select("id,name,slug,image_url,sort_order")
-    .eq("active", true)
-    .order("sort_order", { ascending: true })
-    .returns<Category[]>();
-
-  if (error) {
-    console.error("Error cargando categorías:", error);
-  }
+  const { categories, error } = await getCategories();
 
   return (
     <section
@@ -46,6 +28,7 @@ export async function CategoryGrid() {
           </h2>
         </div>
 
+        {error && <CatalogRetry message={error} />}
         <div className={styles.grid}>
           {categories?.map((category, index) => (
             <article

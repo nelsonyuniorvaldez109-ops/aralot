@@ -20,7 +20,7 @@ export async function saveProduct(_previous: SaveState, formData: FormData): Pro
     const { data: matches, error: lookupError } = await supabase.from("products").select("id").eq("slug", validated.product.slug);
     if (lookupError) return { error: productError(lookupError) };
     if (matches?.some(row => row.id !== validated.id)) validated.product.slug += "-" + crypto.randomUUID().slice(0, 8);
-    const { error, data } = await supabase.rpc("admin_save_product", {
+    const { error, data } = await supabase.rpc("admin_save_product_v2", {
       p_product_id: validated.id ?? null,
       p_expected_updated_at: validated.updated_at ?? null,
       p_product: validated.product,

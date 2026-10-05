@@ -1,6 +1,7 @@
+import { safeImage } from "@/lib/products/images";
 export type Category = { id: string; name: string; active: boolean };
 export type VariantDraft = {
-  id?: string;
+  id?: string; expected_inventory_updated_at?: string; stock_changed?: boolean;
   sku: string; color: string; size: string; presentation: string; image_url: string;
   active: boolean; quantity: string; low_stock_threshold: string;
 };
@@ -38,12 +39,7 @@ export function validateProduct(value: unknown) {
   }
   function image(source: Record<string, unknown>, path: string) {
     const value = text(source, "image_url", path, 2048);
-    if (value) {
-      try {
-        const url = new URL(value);
-        if (!["https:", "http:"].includes(url.protocol) || url.username || url.password) throw new Error();
-      } catch { errors[path] = "Ingresa una URL http o https válida, sin credenciales."; }
-    }
+    if (value && !safeImage(value)) errors[path] = "Selecciona una imagen del almacenamiento autorizado (JPEG, PNG o WEBP).";
     return value || null;
   }
   function numeric(source: Record<string, unknown>, key: string, path: string, integer: boolean, optional = false) {
@@ -76,7 +72,10 @@ export function validateProduct(value: unknown) {
     if (sku && skus.has(sku)) errors[prefix + "sku"] = "El SKU está repetido.";
     if (sku) skus.add(sku);
     if (typeof v.active !== "boolean") errors[prefix + "active"] = "Selecciona el estado.";
+    if (v.stock_changed === true && v.id && (typeof v.expected_inventory_updated_at !== "string" || !Number.isFinite(Date.parse(v.expected_inventory_updated_at)))) errors[prefix + "quantity"] = "Recarga el producto antes de ajustar el stock.";
     return {
+      stock_changed: v.stock_changed === true,
+      expected_inventory_updated_at: typeof v.expected_inventory_updated_at === "string" ? v.expected_inventory_updated_at : null,
       id: v.id || null, sku: sku || null,
       color: text(v, "color", prefix + "color", 100) || null,
       size: text(v, "size", prefix + "size", 50) || null,
@@ -99,6 +98,7 @@ export function validateProduct(value: unknown) {
 
 export function productError(error: unknown): string {
   const e = record(error);
+  if (e.message === "INVENTORY_CHANGED") return "El inventario cambió mientras editabas. Recarga y revisa el stock antes de guardar.";
   if (e.message === "PRODUCT_CHANGED") return "Otro cambio modificó este producto. Recarga antes de guardar.";
   if (e.message === "PRODUCT_NOT_FOUND" || e.code === "PGRST116") return "El producto cambió, ya no existe o no tienes acceso. Recarga la página.";
   if (e.code === "42501") return "Tu cuenta no tiene permisos para gestionar productos.";

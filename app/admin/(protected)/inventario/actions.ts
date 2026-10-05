@@ -44,33 +44,10 @@ export async function addInventory(
     };
   }
 
-  const { data: inventory, error: readError } = await supabase
-    .from("inventory")
-    .select("id, quantity")
-    .eq("id", inventoryId)
-    .single();
-
-  if (readError || !inventory) {
-    return {
-      error: "No se encontró el registro de inventario.",
-    };
-  }
-
-  const currentQuantity = Number(inventory.quantity ?? 0);
-  const newQuantity = currentQuantity + units;
-
-  const { error: updateError } = await supabase
-    .from("inventory")
-    .update({
-      quantity: newQuantity,
-    })
-    .eq("id", inventoryId);
-
-  if (updateError) {
-    return {
-      error: "No se pudieron agregar las unidades.",
-    };
-  }
+  const { error } = await supabase.rpc("admin_add_inventory", {
+    p_inventory_id: inventoryId, p_units: units,
+  });
+  if (error) return { error: "No se pudieron agregar las unidades. Comprueba que la actualización SQL de inventario esté instalada." };
 
   revalidatePath("/admin/inventario");
   revalidatePath("/admin/productos");
@@ -118,20 +95,16 @@ export async function adjustInventory(
     };
   }
 
-  const { data, error } = await supabase
-    .from("inventory")
-    .update({
-      quantity,
-    })
-    .eq("id", inventoryId)
-    .select("id")
-    .single();
-
-  if (error || !data) {
-    return {
-      error: "No se pudo ajustar el inventario.",
-    };
+  const expected = formData.get("expected_updated_at");
+  if (typeof expected !== "string" || !Number.isFinite(Date.parse(expected))) {
+    return { error: "Recarga el inventario antes de ajustar el stock." };
   }
+  const { error } = await supabase.rpc("admin_adjust_inventory", {
+    p_inventory_id: inventoryId, p_quantity: quantity, p_expected_updated_at: expected,
+  });
+  if (error) return { error: error.message === "INVENTORY_CHANGED"
+    ? "El stock cambió mientras editabas. Recarga y revisa la cantidad antes de ajustar."
+    : "No se pudo ajustar el inventario. Comprueba la actualización SQL e inténtalo nuevamente." };
 
   revalidatePath("/admin/inventario");
   revalidatePath("/admin/productos");

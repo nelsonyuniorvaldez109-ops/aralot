@@ -10,6 +10,7 @@ export const metadata = {
 type InventoryRow = {
   id: string;
   quantity: number;
+  updated_at: string;
   low_stock_threshold: number;
   product_variants: {
     id: string;
@@ -45,6 +46,7 @@ export default async function InventoryPage() {
     .select(`
       id,
       quantity,
+      updated_at,
       low_stock_threshold,
       product_variants (
         id,
@@ -156,6 +158,8 @@ export default async function InventoryPage() {
 
                         <AdjustInventory
                           inventoryId={item.id}
+                          key={item.updated_at}
+                          expectedUpdatedAt={item.updated_at}
                           currentQuantity={quantity}
                         />
                       </div>

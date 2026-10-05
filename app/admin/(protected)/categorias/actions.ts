@@ -1,5 +1,6 @@
 "use server";
 
+import { safeImage } from "@/lib/products/images";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { productAccess } from "../productos/access";
@@ -17,6 +18,8 @@ export async function updateCategory(formData: FormData) {
     String(formData.get("description") ?? "").trim() || null;
   const imageUrl =
     String(formData.get("image_url") ?? "").trim() || null;
+
+  if (imageUrl && !safeImage(imageUrl)) throw new Error("Selecciona una imagen del almacenamiento autorizado (JPEG, PNG o WEBP).");
 
   const sortOrderRaw = String(formData.get("sort_order") ?? "0");
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
@@ -75,6 +78,8 @@ export async function createCategory(formData: FormData) {
     String(formData.get("description") ?? "").trim() || null;
   const imageUrl =
     String(formData.get("image_url") ?? "").trim() || null;
+
+  if (imageUrl && !safeImage(imageUrl)) throw new Error("Selecciona una imagen del almacenamiento autorizado (JPEG, PNG o WEBP).");
 
   const sortOrderRaw = String(formData.get("sort_order") ?? "0");
   const sortOrder = Number.parseInt(sortOrderRaw, 10);

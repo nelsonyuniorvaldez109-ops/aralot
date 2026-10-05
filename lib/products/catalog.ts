@@ -1,3 +1,5 @@
+import { safeImage } from "./images";
+export { safeImage } from "./images";
 import type { Product } from "@/data/products";
 export type CatalogVariant = { id: string; color?: string; size?: string; presentation?: string; image?: string; stock: number };
 export type CatalogRow = {
@@ -25,11 +27,6 @@ export function mapProduct(row: CatalogRow): Product {
   presentation:presentations.length===1?presentations[0]:undefined,presentations,
   imagesByColor:Object.fromEntries(variants.filter(v=>v.color&&v.image).map(v=>[v.color!,v.image!])),
  };
-}
-export function safeImage(value: string | null): string {
- if(!value)return "";
- if(value.startsWith("/")&&!value.startsWith("//"))return value;
- try {const url=new URL(value);return url.protocol==="https:"&&!url.username&&!url.password?value:"";}catch{return "";}
 }
 export function selectedVariant(product: Product,color?:string,size?:string,presentation?:string) {
  return product.variants?.find(v=>v.color===color&&v.size===size&&v.presentation===presentation);

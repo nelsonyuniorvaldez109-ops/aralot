@@ -12,7 +12,10 @@ export function groupColors(variants: VariantDraft[]): ColorGroup[] {
 }
 export function collectVariants(original: VariantDraft[], visible: VariantDraft[]): VariantDraft[] {
  const ids=new Set(visible.map(v=>v.id).filter(Boolean));
- return [...visible.filter(v=>v.id||v.active),...original.filter(v=>v.id&&!ids.has(v.id)).map(v=>({...v,active:false}))];
+ return [...visible.filter(v=>v.id||v.active),...original.filter(v=>v.id&&!ids.has(v.id)).map(v=>({...v,active:false}))].map(v => {
+  const previous = original.find(item => item.id === v.id);
+  return {...v, stock_changed: Boolean(v.id && previous && (Number(v.quantity) !== Number(previous.quantity) || Number(v.low_stock_threshold) !== Number(previous.low_stock_threshold))), expected_inventory_updated_at: previous?.expected_inventory_updated_at};
+ });
 }
 export function newColor(): ColorGroup {
  return {key:crypto.randomUUID(),color:"",image:"",variants:["S","M","L","XL"].map(size=>({...emptyVariant(),size,active:false}))};

@@ -9,13 +9,14 @@ import styles from "./products.module.css";
 
 export function ProductForm({initial,categories}:{initial:ProductDraft;categories:Category[]}) {
  const [draft,setDraft]=useState(initial);
+ const [inventoryBaseline]=useState(initial.variants);
  const [colors,setColors]=useState<ColorGroup[]>(()=>groupColors(initial.variants).filter(g=>g.variants.some(v=>v.id)));
  const [presentations,setPresentations]=useState(()=>initial.variants.filter(v=>v.presentation&&!v.color&&!v.size));
  const [uploads,setUploads]=useState(0);
  const [state,action,pending]=useActionState<SaveState,FormData>(saveProduct,{error:""});
  const category=categories.find(c=>c.id===draft.category_id);
  const care=category?.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().includes("cuidado")??false;
- const variants=collectVariants(initial.variants,care?presentations:colors.flatMap(g=>g.variants.map(v=>({...v,color:g.color}))));
+ const variants=collectVariants(inventoryBaseline,care?presentations:colors.flatMap(g=>g.variants.map(v=>({...v,color:g.color}))));
  const payload={...draft,variants};
  const busy=pending||uploads>0;
  const activeCount=variants.filter(v=>v.active).length;

@@ -1,3 +1,4 @@
+import { CatalogRetry } from "@/components/product/CatalogRetry";
 import Link from "next/link";
 import { ProductCard } from "@/components/product/ProductCard";
 import { getProducts } from "@/lib/products/server";
@@ -23,7 +24,7 @@ export async function NewProducts() {
           </Link>
         </div>
 
-        {error && <p role="status">{error}</p>}
+        {error && <CatalogRetry message={error} />}
         <div className={styles.grid}>
           {products.slice(0, 4).map((product, index) => {
             const hasImage = Boolean(product.image);

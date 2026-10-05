@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
-import { WHATSAPP_NUMBER } from "@/lib/store-config";
-import { buildWhatsAppUrl } from "@/lib/whatsapp-order";
 import { receiptImage, receiptRows, type Receipt } from "./receipt";
 import styles from "./ReceiptPreview.module.css";
 
@@ -44,7 +42,7 @@ export function ReceiptPreview({ receipt }: { receipt: Receipt }) {
       }
     } finally { setSharing(false); }
   }
-  const whatsapp = buildWhatsAppUrl(WHATSAPP_NUMBER, receipt.items, receipt.customer, { id: receipt.id, date: receipt.date });
+ const whatsapp = receipt.status === "reserved" ? receipt.whatsappUrl : null;
   return (
     <section className={styles.preview} aria-labelledby="receipt-preview-title">
       <h2 id="receipt-preview-title" ref={heading} tabIndex={-1}>Vista previa del recibo</h2>
@@ -58,6 +56,7 @@ export function ReceiptPreview({ receipt }: { receipt: Receipt }) {
         <button type="button" disabled={!image} onClick={download}>Descargar recibo</button>
         {whatsapp && <a href={whatsapp} target="_blank" rel="noopener noreferrer" onClick={(event) => {
           event.preventDefault();
+          if (Date.now() >= Date.parse(receipt.expiresAt)) { setMessage("La reserva ha vencido. Recarga para continuar."); return; }
           window.open(whatsapp, "_blank", "noopener,noreferrer");
           items.forEach((item) => removeItem(item.key));
         }}>Abrir pedido en WhatsApp</a>}

@@ -8,9 +8,11 @@ const initialState: InventoryState = {};
 export function AdjustInventory({
   inventoryId,
   currentQuantity,
+  expectedUpdatedAt,
 }: {
   inventoryId: string;
   currentQuantity: number;
+  expectedUpdatedAt: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -42,6 +44,7 @@ export function AdjustInventory({
 
   return (
     <form action={action}>
+      <input type="hidden" name="expected_updated_at" value={expectedUpdatedAt} />
       <input
         type="hidden"
         name="inventory_id"

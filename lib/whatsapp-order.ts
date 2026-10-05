@@ -20,7 +20,8 @@ export function buildWhatsAppUrl(
   number: string,
   items: CartItem[],
   customer: CustomerDetails,
-  receipt?: { id: string; date: string },
+  receipt?: { id: string; date: string; subtotal?: number; total?: number },
+  deliveryFee = 100,
 ): string | null {
   if (!/^[1-9]\d{7,14}$/.test(number) || items.length === 0) return null;
 
@@ -33,17 +34,22 @@ export function buildWhatsAppUrl(
     `Precio unitario: ${price(item.price)}`,
     `Subtotal: ${price(item.price * item.quantity)}`,
   ].filter(Boolean).join("\n")).join("\n\n");
-  const { subtotal, deliveryFee, total } = calculateOrderTotal(
-    items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    customer.deliveryMethod === "RECOGER" ? "pickup" : "delivery",
-  );
+  const {
+  subtotal,
+  deliveryFee: appliedDeliveryFee,
+  total,
+} = receipt?.subtotal !== undefined && receipt.total !== undefined ? { subtotal: receipt.subtotal, total: receipt.total, deliveryFee } : calculateOrderTotal(
+  items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+  customer.deliveryMethod === "RECOGER" ? "pickup" : "delivery",
+  deliveryFee
+);
   const message = [
     "Hola, quiero realizar el siguiente pedido:",
-    ...(receipt ? [`Pedido: ${receipt.id} (referencia local)`, `Fecha y hora: ${receipt.date}`] : []),
+    ...(receipt ? [`Pedido: ${receipt.id}`, `Fecha y hora: ${receipt.date}`] : []),
     "", "PEDIDO", "--------------------", "", products, "",
     "--------------------",
     `Subtotal: ${price(subtotal)}`,
-    `${customer.deliveryMethod === "RECOGER" ? "Recogida" : "Envío"}: ${price(deliveryFee)}`,
+   `${customer.deliveryMethod === "RECOGER" ? "Recogida" : "Envío"}: ${price(appliedDeliveryFee)}`,
     `TOTAL: ${price(total)}`,
     "", "DATOS DEL CLIENTE", "",
     `Nombre: ${customer.name}`,

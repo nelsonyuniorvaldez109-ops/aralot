@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { imageRemotePatterns } from "./lib/products/images";
 
 function getSupabaseOrigin() {
   const value = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -42,11 +43,7 @@ const contentSecurityPolicy = [
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: process.env.NEXT_PUBLIC_SUPABASE_URL ? [{
-      protocol: "https",
-      hostname: new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname,
-      pathname: "/storage/v1/object/public/product-images/**",
-    }] : [],
+    remotePatterns: imageRemotePatterns(),
   },
   async headers() {
     return [{

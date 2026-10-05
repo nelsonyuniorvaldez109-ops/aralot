@@ -7,7 +7,9 @@ import { useCart } from "./CartProvider";
 import styles from "./Cart.module.css";
 
 export function CartPage() {
-  const { items, ready, totalUnits, subtotal } = useCart();
+  const { items, ready, error, retry, totalUnits, subtotal } = useCart();
+
+  if (error) return <section className={styles.empty}><p role="alert">{error}</p><p>Tu carrito se conserva.</p><button type="button" onClick={retry}>Reintentar</button></section>;
 
   if (!ready) {
     return (

@@ -63,7 +63,11 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!ready || error) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteIds));
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteIds));
+    } catch {
+      // Storage may be blocked or full; keep the current in-memory state.
+    }
   }, [favoriteIds, ready, error]);
 
   const toggleFavorite = useCallback((productId: string) => {

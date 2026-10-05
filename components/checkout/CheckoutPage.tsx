@@ -1,7 +1,7 @@
 "use client";
-
+import type { PublicStoreSettings } from "@/lib/store-config";
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { ReceiptPreview } from "./ReceiptPreview";
 import type { Receipt } from "./receipt";
@@ -48,8 +48,12 @@ function getValue(formData: FormData, name: string) {
   return String(formData.get(name) ?? "").trim();
 }
 
-export function CheckoutPage() {
-  const { items, ready, subtotal } = useCart();
+export function CheckoutPage({
+  settings,
+}: {
+  settings: PublicStoreSettings;
+}) {
+  const { items, ready, subtotal, error: catalogError, retry: retryCatalog } = useCart();
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("");
   const [province, setProvince] = useState("");
   const [municipality, setMunicipality] = useState("");
@@ -58,7 +62,41 @@ export function CheckoutPage() {
   const [feedback, setFeedback] = useState("");
   const [receipt, setReceipt] = useState<Receipt>();
   const [processing, setProcessing] = useState(false);
-  const [checkoutId] = useState(() => crypto.randomUUID());
+  const [session, setSession] = useState<{checkoutId:string;csrf:string}>();
+  const [recovering, setRecovering] = useState(true);
+  const busy = useRef(false);
+  const pending = useRef<object | null>(null);
+  async function recover() {
+    try {
+      const response = await fetch("/api/checkout/inventory", {cache:"no-store",signal:AbortSignal.timeout(15000)});
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      setSession({checkoutId:result.checkoutId,csrf:result.csrf});
+      setReceipt(result.receipt ?? undefined);
+      if(result.receipt) pending.current=null;
+    } catch (error) {
+      setFeedback(error instanceof Error ? error.message : "No se pudo recuperar el pedido. Recarga para reintentar.");
+    } finally { setRecovering(false); }
+  }
+  useEffect(() => { const timer = setTimeout(() => void recover(), 0); return () => clearTimeout(timer); }, []);
+  useEffect(() => {
+    if(receipt?.status!=="reserved")return;
+    const timer=setTimeout(()=>void recover(),Math.max(1000,Date.parse(receipt.expiresAt)-Date.now()+500));
+    return ()=>clearTimeout(timer);
+  },[receipt?.status,receipt?.expiresAt]);
+  async function orderAction(action:"cancel"|"new") {
+    if(!session||busy.current)return;
+    busy.current=true;setProcessing(true);
+    try{
+      const response=await fetch("/api/checkout/inventory",{method:"POST",headers:{"Content-Type":"application/json","x-checkout-csrf":session.csrf},body:JSON.stringify({action})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error);
+      setSession({checkoutId:result.checkoutId,csrf:result.csrf});
+      setReceipt(result.receipt??undefined);pending.current=null;setFeedback("");
+    }catch(error){setFeedback(error instanceof Error?error.message:"No se pudo completar la solicitud.");}
+    finally{busy.current=false;setProcessing(false);}
+  }
+
 
   function clearError(field: CheckoutField) {
     setErrors((current) => {
@@ -145,60 +183,35 @@ if (invalidVariant) {
   return;
 }
 
-setProcessing(true);
-setFeedback("");
-
+if(!session||busy.current)return;
+busy.current=true;setProcessing(true);setFeedback("");
+// Keep the exact request after an ambiguous network failure, even if the form changes.
+pending.current ??= {checkoutId:session.checkoutId,customer,items:items.map(item=>({variantId:item.variantId,quantity:item.quantity}))};
 try {
   const response = await fetch("/api/checkout/inventory", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      checkoutId,
-      items: items.map((item) => ({
-        variantId: item.variantId,
-        quantity: item.quantity,
-      })),
-    }),
+    method:"POST",headers:{"Content-Type":"application/json","x-checkout-csrf":session.csrf},
+    body:JSON.stringify(pending.current)
   });
-
-  const result = await response.json();
-
-  if (!response.ok || !result.success) {
-    setFeedback(
-      result.error ??
-        "No se pudo confirmar el inventario. Revisa tu carrito e inténtalo nuevamente."
-    );
-    return;
+  const result=await response.json();
+  if(!response.ok){
+    if(response.status<500 && response.status!==429)pending.current=null;
+    throw new Error(result.error ?? "No se pudo reservar el pedido.");
   }
-
-  const now = new Date();
-
-  const random = Array.from(
-    crypto.getRandomValues(new Uint32Array(2)),
-    (value) => value.toString(36)
-  )
-    .join("")
-    .toUpperCase();
-
-  setReceipt({
-    id: `ARA-${now.getTime().toString(36).toUpperCase()}-${random}`,
-    date: now.toLocaleString("es-DO", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }),
-    customer,
-    items: items.map((item) => ({ ...item })),
-  });
-} catch {
-  setFeedback(
-    "No se pudo confirmar el pedido. Verifica tu conexión e inténtalo nuevamente."
-  );
-} finally {
-  setProcessing(false);
+  setReceipt(result.receipt);pending.current=null;
+} catch(error) {
+  setFeedback(error instanceof Error?error.message:"No se pudo confirmar la respuesta. Recupera el pedido o reintenta.");
+} finally {busy.current=false;setProcessing(false);}
 }
-}
+  if(receipt) return <section className={styles.checkout}>
+    <ReceiptPreview receipt={receipt} />
+    <button className={styles.submitButton} type="button" disabled={processing} onClick={()=>void orderAction(receipt.status==="reserved"?"cancel":"new")}>
+      {receipt.status==="reserved"?"Cancelar reserva":"Preparar otro pedido"}
+    </button>
+    <p role="status">{feedback}</p>
+  </section>;
+  if(recovering) return <section className={styles.loading}><p>Cargando pedido…</p></section>;
+  if(!session) return <section className={styles.empty}><p role="alert">{feedback}</p><button type="button" onClick={()=>void recover()}>Reintentar recuperación</button></section>;
+  if (catalogError) return <section className={styles.empty}><p role="alert">{catalogError}</p><p>Tu carrito se conserva.</p><button type="button" onClick={retryCatalog}>Reintentar</button></section>;
   if (!ready) {
     return (
       <section className={styles.loading} aria-live="polite">
@@ -227,7 +240,7 @@ try {
       </header>
 
       <div className={styles.layout}>
-        <form className={styles.form} noValidate onSubmit={handleSubmit} onChange={() => setReceipt(undefined)}>
+        <form className={styles.form} noValidate onSubmit={handleSubmit}>
           <section className={styles.formSection} aria-labelledby="customer-title">
             <div className={styles.sectionHeading}>
               <span>01</span>
@@ -486,11 +499,14 @@ try {
           ) : null}
         </form>
 
-        <OrderSummary items={items} subtotal={subtotal} deliveryMethod={deliveryMethod} />
+        <OrderSummary
+  items={items}
+  subtotal={subtotal}
+  deliveryMethod={deliveryMethod}
+  deliveryFee={settings.deliveryFee}
+/>
       </div>
-      {receipt && JSON.stringify(receipt.items) === JSON.stringify(items) && (
-        <ReceiptPreview key={receipt.id} receipt={receipt} />
-      )}
+
     </section>
   );
 }

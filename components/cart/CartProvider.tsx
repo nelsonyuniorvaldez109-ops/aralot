@@ -7,6 +7,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useRef,
   type ReactNode,
 } from "react";
 
@@ -14,8 +15,9 @@ import { type Product } from "@/data/products";
 import { selectedVariant } from "@/lib/products/catalog";
 import { useCatalog } from "@/components/product/CatalogProvider";
 
+import { readCartStorage, writeCartStorage, type LoadStatus } from "@/lib/products/recovery";
+
 const MAX_QUANTITY = 20;
-const STORAGE_KEY = "ara-lot-cart";
 
 export type CartItem = {
   key: string;
@@ -37,6 +39,9 @@ export type CartItemInput = Omit<CartItem, "key">;
 type CartContextValue = {
   items: CartItem[];
   ready: boolean;
+  status: LoadStatus;
+  error: string | null;
+  retry: () => void;
   totalUnits: number;
   subtotal: number;
   addItem: (item: CartItemInput) => boolean;
@@ -94,40 +99,34 @@ function validateCart(value: unknown, products: Product[]): CartItem[] {
   return result;
 }
 
-function readStoredCart(products: Product[]): CartItem[] {
-  try {
-    const storedCart = window.localStorage.getItem(STORAGE_KEY);
-    if (!storedCart) return [];
-
-    const parsedCart: unknown = JSON.parse(storedCart);
-    return validateCart(parsedCart, products);
-  } catch {
-    return [];
-  }
-}
-
 export function CartProvider({ children }: { children: ReactNode }) {
-  const { products, error } = useCatalog();
+  const { products, error, status, retry } = useCatalog();
+  const initialized = useRef(false);
   const [items, setItems] = useState<CartItem[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (error) return;
+    if (status !== "ready") return;
     const frame = window.requestAnimationFrame(() => {
-      setItems(readStoredCart(products));
+      if (!initialized.current) {
+        setItems(validateCart(readCartStorage(), products));
+        initialized.current = true;
+      } else {
+        setItems(current => validateCart(current, products));
+      }
       setReady(true);
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [products, error]);
+  }, [products, status]);
 
   useEffect(() => {
-    if (!ready || error) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items, ready, error]);
+    if (!ready || status !== "ready") return;
+    writeCartStorage(items);
+  }, [items, ready, status]);
 
   const addItem = useCallback((input: CartItemInput) => {
-    if (error) return false;
+    if (status !== "ready") return false;
     const item = validateItem(input, products);
     if (!item) return false;
     const stock = products.find(p => p.id === item.productId)?.variants?.find(v => v.id === item.variantId)?.stock ?? 0;
@@ -142,17 +141,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return existing ? current.map(v => v.key === item.key ? {...v,quantity:v.quantity+quantity} : v) : [...current,{...item,quantity}];
     });
     return true;
-  }, [items, products, error]);
+  }, [items, products, status]);
 
   const updateQuantity = useCallback((key: string, quantity: number) => {
-    if (error || !Number.isInteger(quantity) || quantity < 1) return;
+    if (status !== "ready" || !Number.isInteger(quantity) || quantity < 1) return;
     setItems(current => current.map(item => {
       if (item.key !== key) return item;
       const stock = products.find(p => p.id === item.productId)?.variants?.find(v => v.id === item.variantId)?.stock ?? 0;
       const others = current.filter(v => v.productId === item.productId && v.key !== key).reduce((n,v) => n+v.quantity,0);
       return {...item,quantity:Math.min(quantity, MAX_QUANTITY-others, stock)};
     }).filter(item => item.quantity > 0));
-  }, [products, error]);
+  }, [products, status]);
 
   const removeItem = useCallback((key: string) => {
     setItems((currentItems) => currentItems.filter((item) => item.key !== key));
@@ -167,14 +166,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       items,
-      ready: ready && !error,
+      ready: ready && status === "ready",
+      status: !ready && status !== "error" ? "loading" as const : status,
+      error,
+      retry,
       totalUnits,
       subtotal,
       addItem,
       updateQuantity,
       removeItem,
     }),
-    [items, ready, error, totalUnits, subtotal, addItem, updateQuantity, removeItem],
+    [items, ready, status, error, retry, totalUnits, subtotal, addItem, updateQuantity, removeItem],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
