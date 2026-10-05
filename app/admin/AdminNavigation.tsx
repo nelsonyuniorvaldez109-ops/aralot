@@ -53,16 +53,17 @@ export function AdminNavigation() {
       href: "/admin/inventario",
       icon: 3,
     },
+    {
+      label: "Configuración",
+      href: "/admin/configuracion",
+      icon: 5,
+    },
   ];
 
   const comingSoonItems = [
     {
       label: "Promociones",
       icon: 4,
-    },
-    {
-      label: "Configuración",
-      icon: 5,
     },
   ];
 
