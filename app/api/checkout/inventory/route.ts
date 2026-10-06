@@ -88,6 +88,7 @@ async function handle(request: NextRequest) {
 
       if (error) {
         const errors: Record<string, [number, string]> = {
+          ORDER_NOT_CONFIRMABLE: [409, "La reserva fue cancelada o ha vencido. Prepara otro pedido."],
           ORDER_CONFLICT: [
             409,
             "Este pedido ya contiene otros datos. Recupera o cancela la reserva antes de crear otro.",
@@ -202,7 +203,15 @@ async function handle(request: NextRequest) {
     } else {
       const body = await readBody(request);
 
-      if (body?.action === "cancel") {
+      if (body?.action === "confirm") {
+        if (body.checkoutId !== session.id) {
+          throw new CheckoutError(409, "Recarga el checkout para recuperar el pedido actual.");
+        }
+        order = await rpc("checkout_confirm", {
+          p_id: session.id,
+          p_owner: session.owner,
+        });
+      } else if (body?.action === "cancel") {
         await rpc("checkout_release", {
           p_id: session.id,
           p_owner: session.owner,

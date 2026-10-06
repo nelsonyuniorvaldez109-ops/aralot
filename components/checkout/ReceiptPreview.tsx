@@ -5,12 +5,13 @@ import { useCart } from "@/components/cart/CartProvider";
 import { receiptImage, receiptRows, type Receipt } from "./receipt";
 import styles from "./ReceiptPreview.module.css";
 
-export function ReceiptPreview({ receipt }: { receipt: Receipt }) {
+export function ReceiptPreview({ receipt, onConfirm }: { receipt: Receipt; onConfirm: () => Promise<Receipt> }) {
   const { items, removeItem } = useCart();
   const heading = useRef<HTMLHeadingElement>(null);
   const [image, setImage] = useState<{ file: File; url: string }>();
   const [message, setMessage] = useState("");
   const [sharing, setSharing] = useState(false);
+  const confirming = useRef(false);
   useEffect(() => {
     heading.current?.focus();
     let active = true;
@@ -42,7 +43,7 @@ export function ReceiptPreview({ receipt }: { receipt: Receipt }) {
       }
     } finally { setSharing(false); }
   }
- const whatsapp = receipt.status === "reserved" ? receipt.whatsappUrl : null;
+ const whatsapp = receipt.status === "reserved" || receipt.status === "confirmed" ? receipt.whatsappUrl : null;
   return (
     <section className={styles.preview} aria-labelledby="receipt-preview-title">
       <h2 id="receipt-preview-title" ref={heading} tabIndex={-1}>Vista previa del recibo</h2>
@@ -54,12 +55,20 @@ export function ReceiptPreview({ receipt }: { receipt: Receipt }) {
       <div className={styles.actions}>
         <button type="button" disabled={!image || sharing} onClick={share}>Compartir imagen</button>
         <button type="button" disabled={!image} onClick={download}>Descargar recibo</button>
-        {whatsapp && <a href={whatsapp} target="_blank" rel="noopener noreferrer" onClick={(event) => {
-          event.preventDefault();
-          if (Date.now() >= Date.parse(receipt.expiresAt)) { setMessage("La reserva ha vencido. Recarga para continuar."); return; }
-          window.open(whatsapp, "_blank", "noopener,noreferrer");
-          items.forEach((item) => removeItem(item.key));
-        }}>Abrir pedido en WhatsApp</a>}
+        {whatsapp && <button type="button" onClick={async () => {
+          if (confirming.current) return;
+          confirming.current = true;
+          setMessage("Confirmando pedido…");
+          try {
+            const confirmed = await onConfirm();
+            if (!confirmed.whatsappUrl) throw new Error("No se pudo abrir WhatsApp. Reintenta.");
+            // Same-tab navigation avoids popup blocking after the server request.
+            window.location.assign(confirmed.whatsappUrl);
+            items.forEach((item) => removeItem(item.key));
+          } catch (error) {
+            setMessage(error instanceof Error ? error.message : "No se pudo confirmar el pedido. Reintenta.");
+          } finally { confirming.current = false; }
+        }}>Abrir pedido en WhatsApp</button>}
       </div>
       <p>WhatsApp abrirá el resumen de texto. Puedes adjuntar la imagen descargada o compartirla desde tu dispositivo.</p>
       <p role="status" aria-live="polite">{message || (!image ? "Preparando imagen del recibo…" : "Recibo listo para compartir o guardar.")}</p>

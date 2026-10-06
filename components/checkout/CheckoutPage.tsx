@@ -84,6 +84,23 @@ export function CheckoutPage({
     const timer=setTimeout(()=>void recover(),Math.max(1000,Date.parse(receipt.expiresAt)-Date.now()+500));
     return ()=>clearTimeout(timer);
   },[receipt?.status,receipt?.expiresAt]);
+  async function confirmOrder(): Promise<Receipt> {
+    if (!session || busy.current) throw new Error("Espera a que termine la solicitud actual.");
+    busy.current = true; setProcessing(true);
+    try {
+      const response = await fetch("/api/checkout/inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-checkout-csrf": session.csrf },
+        body: JSON.stringify({ action: "confirm", checkoutId: receipt?.id }),
+      });
+      const result = await response.json();
+      if (!response.ok || result.receipt?.status !== "confirmed") {
+        throw new Error(result.error ?? "No se pudo confirmar el pedido. Reintenta.");
+      }
+      setReceipt(result.receipt); setFeedback("");
+      return result.receipt;
+    } finally { busy.current = false; setProcessing(false); }
+  }
   async function orderAction(action:"cancel"|"new") {
     if(!session||busy.current)return;
     busy.current=true;setProcessing(true);
@@ -203,7 +220,7 @@ try {
 } finally {busy.current=false;setProcessing(false);}
 }
   if(receipt) return <section className={styles.checkout}>
-    <ReceiptPreview receipt={receipt} />
+    <ReceiptPreview receipt={receipt} onConfirm={confirmOrder} />
     <button className={styles.submitButton} type="button" disabled={processing} onClick={()=>void orderAction(receipt.status==="reserved"?"cancel":"new")}>
       {receipt.status==="reserved"?"Cancelar reserva":"Preparar otro pedido"}
     </button>

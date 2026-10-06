@@ -4,7 +4,7 @@ import type { CustomerDetails } from "@/lib/whatsapp-order";
 export type Receipt = {
   subtotal: number;
   total: number;
-  status: "reserved" | "cancelled" | "expired";
+  status: "reserved" | "confirmed" | "cancelled" | "expired";
   expiresAt: string;
   whatsappUrl: string | null;
   id: string;
@@ -39,10 +39,10 @@ export function receiptRows(receipt: Receipt): ReceiptRow[] {
   add("RECIBO DE PEDIDO", "heading");
   add(`Pedido: ${receipt.id}`);
   add(`Fecha y hora: ${receipt.date}`);
-  add("Solicitud pendiente de confirmación. No acredita pago.");
+  add(receipt.status === "confirmed" ? "Pedido confirmado. No acredita pago." : "Solicitud pendiente de confirmación. No acredita pago.");
 
-  add(`Reserva: ${receipt.status === "reserved" ? "Activa" : receipt.status === "cancelled" ? "Cancelada" : "Vencida"}`);
-  add(`Vencimiento: ${new Date(receipt.expiresAt).toLocaleString("es-DO")}`);
+  add(`Reserva: ${receipt.status === "confirmed" ? "Confirmada" : receipt.status === "reserved" ? "Activa" : receipt.status === "cancelled" ? "Cancelada" : "Vencida"}`);
+  if (receipt.status !== "confirmed") add(`Vencimiento: ${new Date(receipt.expiresAt).toLocaleString("es-DO")}`);
   add("DATOS DEL CLIENTE", "heading");
   add(`Nombre: ${customer.name}`);
   add(`Teléfono: ${customer.phone}`);
