@@ -3,6 +3,7 @@ export { safeImage } from "./images";
 import type { Product } from "@/data/products";
 export type CatalogVariant = { id: string; color?: string; size?: string; presentation?: string; image?: string; stock: number };
 export type CatalogRow = {
+ publication_status: "available" | "coming_soon";
  id: string; slug: string; name: string; description: string | null;
  price: number; sale_price: number | null; image_url: string | null;
  categories: { name: string; slug: string } | null;
@@ -18,6 +19,7 @@ export function mapProduct(row: CatalogRow): Product {
  const unique=(key:"color"|"size"|"presentation")=>[...new Set(variants.map(v=>v[key]).filter((v):v is string=>Boolean(v)))];
  const colors=unique("color"),sizes=unique("size"),presentations=unique("presentation");
  return {
+  publicationStatus:row.publication_status,
   id:row.id,slug:row.slug,name:row.name,description:row.description??"",category:row.categories?.name??"",
   categorySlug:row.categories?.slug??"",price:offer?sale!:normal,
   compareAtPrice:offer&&sale!<normal?normal:undefined,

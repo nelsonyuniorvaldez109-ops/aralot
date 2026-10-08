@@ -1,10 +1,37 @@
 import "server-only";
+import { safeImage } from "@/lib/products/images";
 
 import { createClient } from "@supabase/supabase-js";
 import {
   DEFAULT_STORE_SETTINGS,
   type PublicStoreSettings,
 } from "@/lib/store-config";
+
+// Separate read keeps existing checkout settings independent of this migration.
+export async function getBannerImages(): Promise<string[]> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SECRET_KEY;
+  if (url !== "https://vfsenqecpfzcqahsscsl.supabase.co" || !key) return [];
+  try {
+    const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { data, error } = await client.from("store_settings")
+      .select("poloches_banner_image,personal_care_banner_image").limit(1).maybeSingle();
+    if (error || !data) return [];
+    return [safeImage(data.poloches_banner_image), safeImage(data.personal_care_banner_image)];
+  } catch { return []; }
+}
+
+export async function getHeroImage(): Promise<string> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SECRET_KEY;
+  if (url !== "https://vfsenqecpfzcqahsscsl.supabase.co" || !key) return "";
+  try {
+    const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { data, error } = await client.from("store_settings")
+      .select("hero_image").limit(1).maybeSingle();
+    return error ? "" : safeImage(data?.hero_image);
+  } catch { return ""; }
+}
 
 export async function getPublicStoreSettings(): Promise<PublicStoreSettings> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

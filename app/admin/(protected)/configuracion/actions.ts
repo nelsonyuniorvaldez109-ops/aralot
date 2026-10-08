@@ -2,11 +2,62 @@
 
 import { revalidatePath } from "next/cache";
 import { productAccess } from "../productos/access";
+import { safeImage } from "@/lib/products/images";
+
+export async function updateBannerImages(_previous: SettingsState, formData: FormData): Promise<SettingsState> {
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://vfsenqecpfzcqahsscsl.supabase.co") {
+    return { error: "Esta configuración está habilitada únicamente en ARA LOT producci�n." };
+  }
+  const { supabase, allowed } = await productAccess();
+  if (!allowed) return { error: "Tu cuenta no tiene permisos para modificar la configuración." };
+  const id = formData.get("settings_id");
+  const poloches = formData.get("poloches_banner_image");
+  const care = formData.get("personal_care_banner_image");
+  if (typeof id !== "string" || typeof poloches !== "string" || typeof care !== "string" ||
+      [poloches, care].some(value => value.length > 2048 || (value !== "" && !safeImage(value)))) {
+    return { error: "Selecciona imágenes del almacenamiento autorizado." };
+  }
+  try {
+    const { data, error } = await supabase.from("store_settings").update({
+      poloches_banner_image: poloches || null,
+      personal_care_banner_image: care || null,
+      updated_at: new Date().toISOString(),
+    }).eq("id", id).select("id").single();
+    if (error || !data) return { error: "No se pudieron guardar las imágenes. Comprueba la migración y tus permisos." };
+  } catch { return { error: "No se pudo confirmar el guardado. Recarga para comprobarlo antes de reintentar." }; }
+  revalidatePath("/");
+  revalidatePath("/admin/configuracion");
+  return { success: "Imágenes de portada guardadas correctamente." };
+}
 
 export type SettingsState = {
   error?: string;
   success?: string;
 };
+
+export async function updateHeroImage(_previous: SettingsState, formData: FormData): Promise<SettingsState> {
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://vfsenqecpfzcqahsscsl.supabase.co") {
+    return { error: "Esta configuración está habilitada únicamente en ARA LOT producci�n." };
+  }
+  const { supabase, allowed } = await productAccess();
+  if (!allowed) return { error: "Tu cuenta no tiene permisos para modificar la configuración." };
+  const id = formData.get("settings_id");
+  const image = formData.get("hero_image");
+  if (typeof id !== "string" || typeof image !== "string" || image.length > 2048 ||
+      (image !== "" && (!safeImage(image) || !/^https:\/\/vfsenqecpfzcqahsscsl\.supabase\.co\/storage\/v1\/object\/public\/product-images\/[A-Za-z0-9_-]+\.(jpg|jpeg|png|webp)$/.test(image)))) {
+    return { error: "Selecciona una fotografía del almacenamiento autorizado de TEST." };
+  }
+  try {
+    const { data, error } = await supabase.from("store_settings").update({
+      hero_image: image || null,
+      updated_at: new Date().toISOString(),
+    }).eq("id", id).select("id").single();
+    if (error || !data) return { error: "No se pudo guardar la imagen principal. Comprueba la migración y tus permisos." };
+  } catch { return { error: "No se pudo confirmar el guardado. Recarga para comprobarlo antes de reintentar." }; }
+  revalidatePath("/");
+  revalidatePath("/admin/configuracion");
+  return { success: "Imagen principal de portada guardada correctamente." };
+}
 
 export async function updateSettings(
   _previous: SettingsState,

@@ -7,6 +7,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { useFavorites } from "@/components/favorites/FavoritesProvider";
 import { getProductImage, type Product } from "@/data/products";
 import styles from "./ProductDetail.module.css";
+import { ComingSoonRibbon } from "./ComingSoonRibbon";
 
 type ProductDetailProps = {
   product: Product;
@@ -37,6 +38,7 @@ export function ProductDetail({
   const [quantity, setQuantity] = useState(1);
   const [feedback, setFeedback] = useState("");
   const favorite = isFavorite(product.id);
+  const comingSoon = product.publicationStatus === "coming_soon";
   const variant = selectedVariant(product, selectedColor, selectedSize, selectedPresentation);
   const stock = variant?.stock ?? 0;
   const anyStock = product.variants?.some(v => v.stock > 0) ?? false;
@@ -49,6 +51,7 @@ export function ProductDetail({
     : undefined;
 
   function handleAddToCart() {
+    if (comingSoon) { setFeedback("Disponible próximamente"); return; }
     const missingSelections: string[] = [];
 
     if (product.colors && !selectedColor) missingSelections.push("un color");
@@ -99,6 +102,7 @@ export function ProductDetail({
           />
         )}
 
+        {comingSoon && <ComingSoonRibbon />}
         {product.badge ? <span className={styles.badge}>{product.badge}</span> : null}
       </div>
 
@@ -132,7 +136,7 @@ export function ProductDetail({
                   className={styles.option}
                   type="button"
                   key={color}
-                  disabled={!product.variants?.some(v => v.color === color && v.stock > 0)}
+                  disabled={!comingSoon && !product.variants?.some(v => v.color === color && v.stock > 0)}
                   aria-pressed={selectedColor === color}
                   onClick={() => {
                     setSelectedColor(color);
@@ -160,7 +164,7 @@ export function ProductDetail({
                   className={`${styles.option} ${styles.sizeOption}`}
                   type="button"
                   key={size}
-                  disabled={!product.variants?.some(v => v.size === size && (!selectedColor || v.color === selectedColor) && v.stock > 0)}
+                  disabled={!comingSoon && !product.variants?.some(v => v.size === size && (!selectedColor || v.color === selectedColor) && v.stock > 0)}
                   aria-pressed={selectedSize === size}
                   onClick={() => {
                     setSelectedSize(size);
@@ -181,7 +185,7 @@ export function ProductDetail({
             <div className={styles.options}>{product.presentations.map(presentation => (
               <button key={presentation} type="button" className={styles.option}
                 aria-pressed={selectedPresentation === presentation}
-                disabled={!product.variants?.some(v => v.presentation === presentation && v.stock > 0)}
+                disabled={!comingSoon && !product.variants?.some(v => v.presentation === presentation && v.stock > 0)}
                 onClick={() => { setSelectedPresentation(presentation); setQuantity(1); setFeedback(""); }}>
                 {presentation}
               </button>
@@ -222,7 +226,7 @@ export function ProductDetail({
           <button
             className={styles.addButton}
             type="button"
-            disabled={!cartReady || !anyStock}
+            disabled={comingSoon || !cartReady || !anyStock}
             onClick={handleAddToCart}
           >
             Agregar al carrito
@@ -247,7 +251,7 @@ export function ProductDetail({
         </div>
 
         <p className={styles.feedback} role="status" aria-live="polite">
-          {feedback || (!anyStock ? "Producto agotado" : variant && stock === 0 ? "Combinaci\u00f3n agotada" : "")}
+          {feedback || (comingSoon ? "Disponible próximamente" : !anyStock ? "Producto agotado" : variant && stock === 0 ? "Combinaci\u00f3n agotada" : "")}
         </p>
       </div>
     </article>

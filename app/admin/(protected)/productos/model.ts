@@ -6,6 +6,7 @@ export type VariantDraft = {
   active: boolean; quantity: string; low_stock_threshold: string;
 };
 export type ProductDraft = {
+  publication_status: "available" | "coming_soon";
   id?: string; updated_at?: string; name: string; slug: string; category_id: string;
   description: string; price: string; sale_price: string; image_url: string;
   active: boolean; variants: VariantDraft[];
@@ -20,6 +21,7 @@ export const emptyVariant = (): VariantDraft => ({
   active: true, quantity: "0", low_stock_threshold: "5",
 });
 export const emptyProduct = (): ProductDraft => ({
+  publication_status: "available",
   name: "", slug: "", category_id: "", description: "", price: "", sale_price: "",
   image_url: "", active: true, variants: [emptyVariant()],
 });
@@ -60,6 +62,7 @@ export function validateProduct(value: unknown) {
   const sale_price = numeric(input, "sale_price", "sale_price", false, true);
   if (sale_price !== null && sale_price > price) errors.sale_price = "La oferta no puede superar el precio.";
   if (typeof input.active !== "boolean") errors.active = "Selecciona el estado.";
+  if (input.publication_status !== "available" && input.publication_status !== "coming_soon") errors.publication_status = "Selecciona el estado de publicación.";
   if (input.id !== undefined && !isId(input.id)) errors.form = "Producto inválido.";
   if (input.id && (typeof input.updated_at !== "string" || !Number.isFinite(Date.parse(input.updated_at)))) errors.form = "Recarga el producto antes de editarlo.";
   if (!Array.isArray(input.variants) || input.variants.length < 1 || input.variants.length > 100) errors.variants = "Agrega entre 1 y 100 variantes.";
@@ -92,7 +95,7 @@ export function validateProduct(value: unknown) {
     combinations.add(key);
   }
   if (input.active && !variants.some(v => v.active)) errors.variants = "Agrega al menos una opción disponible.";
-  const product = { name, slug, category_id, description: text(input, "description", "description", 10000) || null, price, sale_price, image_url: image(input, "image_url"), active: input.active };
+  const product = { name, slug, category_id, description: text(input, "description", "description", 10000) || null, price, sale_price, image_url: image(input, "image_url"), active: input.active, publication_status: input.publication_status };
   return { errors, product, variants, id: input.id as string | undefined, updated_at: input.updated_at as string | undefined };
 }
 

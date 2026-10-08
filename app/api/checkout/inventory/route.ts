@@ -88,6 +88,7 @@ async function handle(request: NextRequest) {
 
       if (error) {
         const errors: Record<string, [number, string]> = {
+          PRODUCT_COMING_SOON: [409, "Un producto está disponible próximamente y no puede comprarse todavía."],
           ORDER_NOT_CONFIRMABLE: [409, "La reserva fue cancelada o ha vencido. Prepara otro pedido."],
           ORDER_CONFLICT: [
             409,

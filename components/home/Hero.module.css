@@ -144,3 +144,15 @@
 .description { font-size: var(--text-body); line-height: var(--leading-body); }
 .cta { font-size: var(--text-control); letter-spacing: 0.025em; }
 .signature, .eyebrow { font-size: var(--text-secondary); line-height: 1.5; letter-spacing: 0.04em; }
+
+/* Imagen principal configurada desde el administrador */
+.configuredImage {
+  object-fit: contain;
+  object-position: right center;
+}
+
+@media (max-width: 63.999rem) {
+  .configuredImage {
+    object-position: center top;
+  }
+}

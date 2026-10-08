@@ -7,6 +7,7 @@ export const productCategories = {
 } as const;
 
 export type Product = {
+  publicationStatus?: "available" | "coming_soon";
   id: string;
   slug: string;
   name: string;

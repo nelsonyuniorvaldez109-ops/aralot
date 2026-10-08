@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./PromotionalBanners.module.css";
+import { getBannerImages } from "@/lib/store-settings-server";
 
 const banners = [
   {
@@ -23,16 +24,17 @@ const banners = [
   },
 ] as const;
 
-export function PromotionalBanners() {
+export async function PromotionalBanners() {
+  const images = await getBannerImages();
   return (
     <section className={styles.section} aria-labelledby="promotions-title">
       <h2 className={styles.visuallyHidden} id="promotions-title">
         Colecciones destacadas
       </h2>
       <div className={`${styles.grid} container`}>
-        {banners.map((banner) => (
+        {banners.map((banner, index) => (
           <article className={styles.banner} key={banner.eyebrow}>
-            <div className={styles.media}><Image src={banner.image} alt={banner.alt} fill sizes="(max-width: 767px) 100vw, 50vw" className={styles.image} /></div>
+            <div className={styles.media}><Image src={images[index] || banner.image} alt={banner.alt} fill sizes="(max-width: 767px) 100vw, 50vw" className={styles.image} /></div>
             <div className={styles.content}>
               <p className={styles.eyebrow}>{banner.eyebrow}</p>
               <h3>{banner.title}</h3>

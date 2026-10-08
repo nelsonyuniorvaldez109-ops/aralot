@@ -7,7 +7,7 @@ import type { Product } from "@/data/products";
 export type CatalogResult = { products: Product[]; error: string | null };
 
 const columns =
-  "id,slug,name,description,price,sale_price,image_url,categories(name,slug),product_variants(id,color,size,presentation,image_url,inventory(quantity))";
+  "id,slug,name,description,price,sale_price,image_url,publication_status,categories(name,slug),product_variants(id,color,size,presentation,image_url,inventory(quantity))";
 
 export const getProducts = cache(
   async (category?: string, slug?: string): Promise<CatalogResult> => {

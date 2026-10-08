@@ -40,6 +40,13 @@ export function ProductForm({initial,categories}:{initial:ProductDraft;categorie
      <div>
       <section className={styles.card}><h2>Información</h2><div className={styles.grid}>
        {field("name","Nombre",true)}
+       <div className={styles.field}>
+        <label htmlFor="product-publication-status">Estado de publicación</label>
+        <select id="product-publication-status" value={draft.publication_status} onChange={e=>set("publication_status",e.target.value as ProductDraft["publication_status"])} aria-invalid={Boolean(state.fields?.publication_status)}>
+         <option value="available">Disponible</option>
+         <option value="coming_soon">Próximamente</option>
+        </select>
+       </div>
        <div className={styles.field}><label htmlFor="product-category_id">Categoría *</label><select id="product-category_id" value={draft.category_id} required onChange={e=>set("category_id",e.target.value)} aria-invalid={Boolean(state.fields?.category_id)}><option value="">Selecciona una categoría</option>{categories.map(c=><option key={c.id} value={c.id}>{c.name}{!c.active?" (inactiva)":""}</option>)}</select>{state.fields?.category_id&&<p>{state.fields.category_id}</p>}</div>
        <div className={styles.full+" "+styles.field}><label htmlFor="product-description">Descripción (opcional)</label><textarea id="product-description" rows={4} maxLength={10000} value={draft.description} onChange={e=>set("description",e.target.value)}/></div>
       </div><label className={styles.check}><input type="checkbox" checked={draft.active} onChange={e=>set("active",e.target.checked)}/>Producto activo</label></section>

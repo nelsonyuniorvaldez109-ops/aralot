@@ -1,24 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
+import { getHeroImage } from "@/lib/store-settings-server";
 
 type HeroProps = {
-  // Once the approved photo exists at public/images/hero/ara-lot-hero.webp,
-  // pass a description of that photograph to enable it: <Hero imageAlt="..." />.
+  // Description of the original fallback photograph.
   imageAlt?: string;
 };
 
-export function Hero({ imageAlt }: HeroProps) {
+export async function Hero({ imageAlt }: HeroProps) {
+  const configuredImage = await getHeroImage();
   return (
     <section className={styles.hero} aria-labelledby="hero-title">
-      {imageAlt && (
+      {(imageAlt || configuredImage) && (
         <Image
-          src="/images/hero/ara-lot-hero.webp"
-          alt={imageAlt}
+          src={configuredImage || "/images/hero/ara-lot-hero.webp"}
+          alt={configuredImage ? "Imagen principal de la colección ARA LOT" : imageAlt || "ARA LOT"}
           fill
-          sizes="(max-width: 1023px) max(100vw, 1024px, 178svh), max(100vw, 139svh)"
+          sizes={configuredImage ? "100vw" : "(max-width: 1023px) max(100vw, 1024px, 178svh), max(100vw, 139svh)"}
           preload
-          className={styles.image}
+          className={`${styles.image} ${configuredImage ? styles.configuredImage : ""}`}
         />
       )}
       <div className={styles.shade} aria-hidden="true" />

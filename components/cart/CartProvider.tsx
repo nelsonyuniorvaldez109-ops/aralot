@@ -65,7 +65,7 @@ function validateItem(value: unknown, products: Product[]): CartItem | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const input = value as Record<string, unknown>;
   const product = products.find(product => product.id === input.productId);
-  if (!product || typeof input.quantity !== "number" || !Number.isInteger(input.quantity) || input.quantity < 1 || input.quantity > MAX_QUANTITY) return null;
+  if (!product || product.publicationStatus === "coming_soon" || typeof input.quantity !== "number" || !Number.isInteger(input.quantity) || input.quantity < 1 || input.quantity > MAX_QUANTITY) return null;
   const variant = selectedVariant(product, input.selectedColor as string | undefined, input.selectedSize as string | undefined, input.presentation as string | undefined);
   if (!variant || variant.stock < 1) return null;
   const item: CartItemInput = {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useFavorites } from "@/components/favorites/FavoritesProvider";
 import type { Product } from "@/data/products";
 import styles from "./ProductCard.module.css";
+import { ComingSoonRibbon } from "./ComingSoonRibbon";
 
 type ProductCardProps = {
   product: Product;
@@ -50,6 +51,7 @@ export function ProductCard({
           )}
         </div>
 
+        {product.publicationStatus === "coming_soon" && <ComingSoonRibbon />}
         {product.badge ? (
           <span className={styles.badge}>{product.badge}</span>
         ) : null}
@@ -73,6 +75,7 @@ export function ProductCard({
       </div>
 
       <div className={styles.content}>
+        {product.publicationStatus === "coming_soon" && <p>Disponible próximamente</p>}
         <h3>
           <Link className={styles.nameLink} href={`/productos/${product.slug}`}>
             {product.name}
