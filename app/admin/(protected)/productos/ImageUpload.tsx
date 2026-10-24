@@ -4,7 +4,7 @@ import { safeImage } from "@/lib/products/images";
 import { useId, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./products.module.css";
-export function ImageUpload({ value, onChange, onBusy, disabled = false, label }: { value: string; onChange: (url: string) => void; onBusy: (busy: boolean) => void; disabled?: boolean; label: string }) {
+export function ImageUpload({ value, onChange, onBusy, disabled = false, label, deduplicate = false }: { value: string; onChange: (url: string) => void; onBusy: (busy: boolean) => void; disabled?: boolean; label: string; deduplicate?: boolean }) {
  const id = useId();
  const [busy,setBusy]=useState(false), [error,setError]=useState("");
  async function upload(file?: File) {
@@ -12,13 +12,19 @@ export function ImageUpload({ value, onChange, onBusy, disabled = false, label }
   setError("");
   const extensions: Record<string,string> = {"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};
   if (!extensions[file.type] || !file.size || file.size > 10*1024*1024) { setError("Selecciona una imagen JPEG, PNG o WEBP de hasta 10 MB."); return; }
+  if (deduplicate && !({"image/jpeg": /\.jpe?g$/i, "image/png": /\.png$/i, "image/webp": /\.webp$/i}[file.type]?.test(file.name))) {
+   setError("La extensión debe coincidir con el formato JPG, PNG o WEBP de la imagen."); return;
+  }
   setBusy(true); onBusy(true);
   try {
    const bitmap = await createImageBitmap(file); bitmap.close();
    const client=createClient();
-   const path=crypto.randomUUID()+"."+extensions[file.type];
+   const filename = deduplicate
+    ? "carousel-" + Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", await file.arrayBuffer())), byte => byte.toString(16).padStart(2,"0")).join("")
+    : crypto.randomUUID();
+   const path=filename+"."+extensions[file.type];
    const {error}=await client.storage.from("product-images").upload(path,file,{contentType:file.type,upsert:false});
-   if(error) throw error;
+   if(error && !(deduplicate && String(error.statusCode) === "409")) throw error;
    const image = safeImage(client.storage.from("product-images").getPublicUrl(path).data.publicUrl);
    if (!image) throw new Error("Unsupported image URL");
    onChange(image);

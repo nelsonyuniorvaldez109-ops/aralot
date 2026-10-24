@@ -2,6 +2,7 @@ import { productAccess } from "../productos/access";
 import { SettingsForm } from "./SettingsForm";
 import { BannerImagesForm } from "./BannerImagesForm";
 import { HeroImageForm } from "./HeroImageForm";
+import { CarouselImagesForm } from "./CarouselImagesForm";
 import styles from "./configuracion.module.css";
 
 export default async function SettingsPage() {
@@ -61,6 +62,9 @@ export default async function SettingsPage() {
     ? await supabase.from("store_settings").select("id,poloches_banner_image,personal_care_banner_image").eq("id", settings.id).single()
     : null;
 
+  const carousel = await supabase.from("home_carousel_images")
+    .select("id,image_url,active").order("sort_order");
+
   const hero = process.env.NEXT_PUBLIC_SUPABASE_URL === "https://vfsenqecpfzcqahsscsl.supabase.co"
     ? await supabase.from("store_settings").select("id,hero_image").eq("id", settings.id).single()
     : null;
@@ -79,6 +83,8 @@ export default async function SettingsPage() {
       </div>
 
       <SettingsForm settings={settings} />
+      {!carousel.error && carousel.data ? <CarouselImagesForm initial={carousel.data} />
+        : <p role="status">Carrusel de portada: no se pudo cargar. Comprueba la conexión y aplica la migración home-carousel.sql si está pendiente; después recarga esta página.</p>}
       {hero?.data && !hero.error ? <HeroImageForm
         key={`${hero.data.id}:${hero.data.hero_image}`} id={hero.data.id} image={hero.data.hero_image}
       /> : <p role="status">Imagen principal de portada: requiere conexión a Supabase y la migración de imágenes aplicada.</p>}

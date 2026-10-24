@@ -1,0 +1,14 @@
+.carousel { width: 100%; min-width: 0; overflow: hidden; padding: clamp(24px, 4vw, 56px) 0; color: #000; }
+.viewport { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
+.viewport::-webkit-scrollbar { display: none; }
+.track { display: flex; width: max-content; }
+.group { display: flex; gap: clamp(12px, 2vw, 28px); padding-right: clamp(12px, 2vw, 28px); }
+.frame { position: relative; flex: 0 0 auto; width: max(240px, 28vw); aspect-ratio: 3 / 4; background: #fff; }
+.frame img { object-fit: contain; }
+.controls { display: flex; justify-content: flex-end; gap: 8px; padding: 16px clamp(16px, 4vw, 64px) 0; }
+.controls button { width: 44px; height: 44px; border: 1px solid #000; background: transparent; color: #000; cursor: pointer; font: inherit; font-size: 20px; transition: background-color 160ms, color 160ms; }
+.controls button:hover { background: #000; color: #fff; }
+.controls button:focus-visible, .viewport:focus-visible { outline: 2px solid #000; outline-offset: -3px; }
+@media (max-width: 1000px) { .frame { width: 42vw; } }
+@media (max-width: 600px) { .frame { width: 72vw; } }
+@media (prefers-reduced-motion: reduce) { .controls button { transition: none; } }
