@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import styles from "./HomeImageCarousel.module.css";
 
 const motionQuery = "(prefers-reduced-motion: reduce)";
@@ -16,8 +16,6 @@ export function HomeImageCarouselTrack({ images }: { images: { id: string; image
   const group = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
   const resumeAt = useRef(0);
-  const [stopped, setStopped] = useState(false);
-  const stoppedRef = useRef(false);
   const reduced = useSyncExternalStore(subscribeMotion, () => window.matchMedia(motionQuery).matches, () => true);
   const looping = !reduced && images.length > 1;
   // Each repeated group is wider than the viewport, even with only two photographs.
@@ -44,7 +42,7 @@ export function HomeImageCarouselTrack({ images }: { images: { id: string; image
     const tick = (time: number) => {
       const elapsed = Math.min(time - (last || time), 50);
       last = time;
-      if (visible && !document.hidden && !paused.current && !stoppedRef.current && time >= resumeAt.current) {
+      if (visible && !document.hidden && !paused.current && time >= resumeAt.current) {
         fraction += elapsed * 0.028; // 28 px/second, independent of display refresh rate.
         const pixels = Math.floor(fraction);
         fraction -= pixels;
@@ -87,10 +85,5 @@ export function HomeImageCarouselTrack({ images }: { images: { id: string; image
         </div>)}
       </div>
     </div>
-    {images.length > 1 && <div className={styles.controls}>
-      <button type="button" onClick={() => advance(-1)} aria-label="Fotografías anteriores">←</button>
-      {looping && <button type="button" onClick={() => { stoppedRef.current = !stopped; setStopped(!stopped); }} aria-label={stopped ? "Reanudar movimiento" : "Pausar movimiento"} aria-pressed={stopped}>{stopped ? "▶" : "Ⅱ"}</button>}
-      <button type="button" onClick={() => advance(1)} aria-label="Fotografías siguientes">→</button>
-    </div>}
   </section>;
 }
