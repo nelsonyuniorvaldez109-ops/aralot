@@ -1,4 +1,4 @@
-.carousel { width: 100%; min-width: 0; overflow: hidden; padding: clamp(24px, 4vw, 56px) 0; color: #000; }
+.carousel { width: 100%; min-width: 0; overflow: hidden; padding: 0; color: #000; }
 .viewport { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
 .viewport::-webkit-scrollbar { display: none; }
 .track { display: flex; width: max-content; }
