@@ -83,8 +83,15 @@ export default async function SettingsPage() {
       </div>
 
       <SettingsForm settings={settings} />
-      {!carousel.error && carousel.data ? <CarouselImagesForm initial={carousel.data} />
-        : <p role="status">Carrusel de portada: no se pudo cargar. Comprueba la conexión y aplica la migración home-carousel.sql si está pendiente; después recarga esta página.</p>}
+      <CarouselImagesForm
+        key={carousel.error ? "unavailable" : "available"}
+        initial={carousel.data ?? []}
+        unavailable={carousel.error
+          ? ["42P01", "PGRST205"].includes(carousel.error.code)
+            ? "El carrusel está pendiente de activación en Supabase. Debe aplicarse la migración home-carousel.sql y después recargar esta página."
+            : "No se pudieron cargar las fotografías. Comprueba la conexión y los permisos, y recarga esta página antes de subir o guardar imágenes."
+          : !carousel.data ? "No se pudieron cargar las fotografías. Recarga esta página para reintentar." : undefined}
+      />
       {hero?.data && !hero.error ? <HeroImageForm
         key={`${hero.data.id}:${hero.data.hero_image}`} id={hero.data.id} image={hero.data.hero_image}
       /> : <p role="status">Imagen principal de portada: requiere conexión a Supabase y la migración de imágenes aplicada.</p>}

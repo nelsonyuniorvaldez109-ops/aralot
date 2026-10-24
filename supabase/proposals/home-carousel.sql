@@ -30,7 +30,7 @@ create policy home_carousel_admin on public.home_carousel_images
 create function public.admin_save_home_carousel(p_images jsonb)
 returns void language plpgsql security invoker set search_path = '' as $$
 begin
-  if auth.uid() is null or not public.is_admin() then
+  if auth.uid() is null or public.is_admin() is not true then
     raise exception using errcode = '42501', message = 'ADMIN_REQUIRED';
   end if;
   if p_images is null or jsonb_typeof(p_images) <> 'array' then
@@ -43,9 +43,14 @@ begin
     select 1 from jsonb_array_elements(p_images) e
     where jsonb_typeof(e) is distinct from 'object'
        or jsonb_typeof(e->'id') is distinct from 'string'
+       or (e->>'id') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
        or jsonb_typeof(e->'image_url') is distinct from 'string'
        or jsonb_typeof(e->'active') is distinct from 'boolean'
-  ) or (select count(distinct (e->>'id')::uuid) from jsonb_array_elements(p_images) e) <> jsonb_array_length(p_images)
+  ) then
+    raise exception using errcode = '22023', message = 'INVALID_CAROUSEL';
+  end if;
+  -- Cast only after every entry has passed the shape and UUID checks.
+  if (select count(distinct (e->>'id')::uuid) from jsonb_array_elements(p_images) e) <> jsonb_array_length(p_images)
     or (select count(distinct e->>'image_url') from jsonb_array_elements(p_images) e) <> jsonb_array_length(p_images) then
     raise exception using errcode = '22023', message = 'INVALID_CAROUSEL';
   end if;
@@ -54,7 +59,8 @@ begin
   lock table public.home_carousel_images in exclusive mode;
   delete from public.home_carousel_images c
     where not exists (select 1 from jsonb_array_elements(p_images) e where (e->>'id')::uuid = c.id);
-  -- Preserve IDs/created_at for existing entries; defer slot uniqueness for swaps.
+  /* Preserve IDs/created_at for existing entries; defer slot uniqueness for swaps. */
+
   insert into public.home_carousel_images (id, image_url, sort_order, active)
     select (e->>'id')::uuid, e->>'image_url', (position - 1)::integer, (e->>'active')::boolean
     from jsonb_array_elements(p_images) with ordinality as entries(e, position)

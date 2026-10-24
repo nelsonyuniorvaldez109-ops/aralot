@@ -7,12 +7,12 @@ import { saveCarousel } from "./carousel-actions";
 import layout from "./configuracion.module.css";
 import styles from "./CarouselImagesForm.module.css";
 
-export function CarouselImagesForm({ initial }: { initial: CarouselImage[] }) {
+export function CarouselImagesForm({ initial, unavailable }: { initial: CarouselImage[]; unavailable?: string }) {
   const [images, setImages] = useState(initial);
   const [uploading, setUploading] = useState(false);
   const [notice, setNotice] = useState("");
   const [state, action, pending] = useActionState(saveCarousel, {});
-  const busy = uploading || pending;
+  const busy = uploading || pending || Boolean(unavailable);
   function move(index: number, direction: number) {
     setImages(current => {
       const next = [...current];
@@ -25,7 +25,8 @@ export function CarouselImagesForm({ initial }: { initial: CarouselImage[] }) {
     <section className={layout.card}>
       <h2>Carrusel de portada</h2>
       <p>Ordena las fotografías que aparecerán después de los productos nuevos. Los cambios se publican al guardar.</p>
-      <p role="status">{images.length} / {MAX_CAROUSEL_IMAGES} imágenes registradas</p>
+      {unavailable ? <p role="alert" className={layout.errorMessage}>{unavailable}</p>
+        : <p role="status">{images.length} / {MAX_CAROUSEL_IMAGES} imágenes registradas</p>}
       <ol className={styles.list}>
         {images.map((image, index) => <li key={image.id} className={styles.item}>
           <div className={styles.preview}><Image src={image.image_url} alt={`Fotografía ${index + 1}`} fill sizes="120px" /></div>
