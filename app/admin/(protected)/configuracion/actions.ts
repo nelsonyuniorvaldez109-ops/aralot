@@ -6,7 +6,7 @@ import { safeImage } from "@/lib/products/images";
 
 export async function updateBannerImages(_previous: SettingsState, formData: FormData): Promise<SettingsState> {
   if (process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://vfsenqecpfzcqahsscsl.supabase.co") {
-    return { error: "Esta configuración está habilitada únicamente en ARA LOT producci�n." };
+    return { error: "Esta configuración está habilitada únicamente en ARA LOT producción." };
   }
   const { supabase, allowed } = await productAccess();
   if (!allowed) return { error: "Tu cuenta no tiene permisos para modificar la configuración." };
@@ -14,7 +14,7 @@ export async function updateBannerImages(_previous: SettingsState, formData: For
   const poloches = formData.get("poloches_banner_image");
   const care = formData.get("personal_care_banner_image");
   if (typeof id !== "string" || typeof poloches !== "string" || typeof care !== "string" ||
-      [poloches, care].some(value => value.length > 2048 || (value !== "" && !safeImage(value)))) {
+      [poloches, care].some(value => value.length > 2048 || (value !== "" && (!safeImage(value) || !/^https:\/\/vfsenqecpfzcqahsscsl\.supabase\.co\/storage\/v1\/object\/public\/product-images\/[A-Za-z0-9_-]+\.(jpg|jpeg|png|webp)$/.test(value))))) {
     return { error: "Selecciona imágenes del almacenamiento autorizado." };
   }
   try {
@@ -37,7 +37,7 @@ export type SettingsState = {
 
 export async function updateHeroImage(_previous: SettingsState, formData: FormData): Promise<SettingsState> {
   if (process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://vfsenqecpfzcqahsscsl.supabase.co") {
-    return { error: "Esta configuración está habilitada únicamente en ARA LOT producci�n." };
+    return { error: "Esta configuración está habilitada únicamente en ARA LOT producción." };
   }
   const { supabase, allowed } = await productAccess();
   if (!allowed) return { error: "Tu cuenta no tiene permisos para modificar la configuración." };
@@ -45,7 +45,7 @@ export async function updateHeroImage(_previous: SettingsState, formData: FormDa
   const image = formData.get("hero_image");
   if (typeof id !== "string" || typeof image !== "string" || image.length > 2048 ||
       (image !== "" && (!safeImage(image) || !/^https:\/\/vfsenqecpfzcqahsscsl\.supabase\.co\/storage\/v1\/object\/public\/product-images\/[A-Za-z0-9_-]+\.(jpg|jpeg|png|webp)$/.test(image)))) {
-    return { error: "Selecciona una fotografía del almacenamiento autorizado de TEST." };
+    return { error: "Selecciona una fotografía del almacenamiento autorizado." };
   }
   try {
     const { data, error } = await supabase.from("store_settings").update({

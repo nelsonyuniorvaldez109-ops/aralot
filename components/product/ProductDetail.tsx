@@ -124,7 +124,7 @@ export function ProductDetail({
 
         <p className={styles.description}>{product.description}</p>
 
-        {product.colors ? (
+        {!comingSoon && product.colors ? (
           <fieldset className={styles.optionGroup}>
             <legend>
               Color
@@ -152,7 +152,7 @@ export function ProductDetail({
           </fieldset>
         ) : null}
 
-        {product.sizes ? (
+        {!comingSoon && product.sizes ? (
           <fieldset className={styles.optionGroup}>
             <legend>
               Talla
@@ -201,6 +201,7 @@ export function ProductDetail({
         ) : null}
 
         <div className={styles.purchaseControls}>
+          {!comingSoon && <>
           <div className={styles.quantity} aria-label="Selector de cantidad">
             <button
               type="button"
@@ -231,6 +232,7 @@ export function ProductDetail({
           >
             Agregar al carrito
           </button>
+          </>}
 
           <button
             className={styles.favoriteButton}
@@ -251,7 +253,7 @@ export function ProductDetail({
         </div>
 
         <p className={styles.feedback} role="status" aria-live="polite">
-          {feedback || (comingSoon ? "Disponible próximamente" : !anyStock ? "Producto agotado" : variant && stock === 0 ? "Combinaci\u00f3n agotada" : "")}
+          {comingSoon ? "Disponible próximamente" : feedback || (!anyStock ? "Producto agotado" : variant && stock === 0 ? "Combinaci\u00f3n agotada" : "")}
         </p>
       </div>
     </article>

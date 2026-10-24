@@ -81,11 +81,11 @@ export default async function SettingsPage() {
       <SettingsForm settings={settings} />
       {hero?.data && !hero.error ? <HeroImageForm
         key={`${hero.data.id}:${hero.data.hero_image}`} id={hero.data.id} image={hero.data.hero_image}
-      /> : <p role="status">Imagen principal de portada: requiere conexión a TEST y la migración del Hero aplicada.</p>}
+      /> : <p role="status">Imagen principal de portada: requiere conexión a Supabase y la migración de imágenes aplicada.</p>}
       {banners?.data && !banners.error ? <BannerImagesForm
         key={`${banners.data.id}:${banners.data.poloches_banner_image}:${banners.data.personal_care_banner_image}`}
         id={banners.data.id} poloches={banners.data.poloches_banner_image} care={banners.data.personal_care_banner_image}
-      /> : <p role="status">Fotografías de portada: requiere conexión a TEST y la migración de banners aplicada.</p>}
+      /> : <p role="status">Fotografías de portada: requiere conexión a Supabase y la migración de imágenes aplicada.</p>}
     </section>
   );
 }
