@@ -2,9 +2,7 @@
 .viewport { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; }
 .viewport::-webkit-scrollbar { display: none; }
 .track { display: flex; width: max-content; }
-.group { display: flex; gap: clamp(12px, 2vw, 28px); padding-right: clamp(12px, 2vw, 28px); }
-.frame { position: relative; flex: 0 0 auto; width: max(240px, 28vw); aspect-ratio: 3 / 4; background: #fff; }
-.frame img { object-fit: contain; }
+.group { display: flex; flex: 0 0 auto; align-items: flex-start; gap: clamp(12px, 2vw, 28px); padding-right: clamp(12px, 2vw, 28px); }
+.frame { flex: 0 0 auto; }
+.frame img { display: block; width: auto; height: clamp(180px, 24vw, 360px); max-width: none; }
 .viewport:focus-visible { outline: 2px solid #000; outline-offset: -3px; }
-@media (max-width: 1000px) { .frame { width: 42vw; } }
-@media (max-width: 600px) { .frame { width: 72vw; } }
