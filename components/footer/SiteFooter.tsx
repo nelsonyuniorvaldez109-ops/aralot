@@ -10,8 +10,8 @@ const shopLinks = [
   { label: "Combos", href: "/#categories-title" },
   { label: "Ofertas", href: "/#new-products" },
 ] as const;
-const helpDestinations: Record<string, string> = { "Envíos y entregas": "/envios", "Cambios y devoluciones": "/cambios", "Términos y condiciones": "/terminos", "Política de privacidad": "/privacidad" };
-const helpLinks = ["Preguntas frecuentes", "Envíos y entregas", "Cambios y devoluciones", "Términos y condiciones", "Política de privacidad"];
+const helpDestinations: Record<string, string> = { "Envíos y entregas": "/envios", "Cambios y devoluciones": "/cambios", "Términos y condiciones": "/terminos", "Política de privacidad": "/privacidad", "Política de Cookies": "/politica-de-cookies" };
+const helpLinks = ["Preguntas frecuentes", "Envíos y entregas", "Cambios y devoluciones", "Términos y condiciones", "Política de privacidad", "Política de Cookies"];
 
 type IconName = "instagram" | "mail" | "whatsapp" | "truck" | "shield" | "support" | "location";
 function Icon({ name }: { name: IconName }) {
