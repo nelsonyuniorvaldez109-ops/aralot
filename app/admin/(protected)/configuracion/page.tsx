@@ -3,6 +3,8 @@ import { SettingsForm } from "./SettingsForm";
 import { BannerImagesForm } from "./BannerImagesForm";
 import { HeroImageForm } from "./HeroImageForm";
 import { CarouselImagesForm } from "./CarouselImagesForm";
+import { carouselFailure } from "./carousel-errors";
+import { type CarouselImage, isCarouselRevision, validateCarousel } from "@/lib/home-carousel";
 import styles from "./configuracion.module.css";
 
 export default async function SettingsPage() {
@@ -62,8 +64,15 @@ export default async function SettingsPage() {
     ? await supabase.from("store_settings").select("id,poloches_banner_image,personal_care_banner_image").eq("id", settings.id).single()
     : null;
 
-  const carousel = await supabase.from("home_carousel_images")
-    .select("id,image_url,active").order("sort_order");
+  let carouselImages: CarouselImage[] = [];
+  let carouselRevision: string | undefined;
+  let carouselError: string | undefined;
+  try {
+    const result = await supabase.rpc("admin_read_home_carousel");
+    const images = validateCarousel(result.data?.images);
+    if (result.error || !images || !isCarouselRevision(result.data?.revision)) carouselError = carouselFailure("query", result.error);
+    else { carouselImages = images; carouselRevision = result.data.revision; }
+  } catch (error) { carouselError = carouselFailure("query", error); }
 
   const hero = process.env.NEXT_PUBLIC_SUPABASE_URL === "https://vfsenqecpfzcqahsscsl.supabase.co"
     ? await supabase.from("store_settings").select("id,hero_image").eq("id", settings.id).single()
@@ -84,13 +93,10 @@ export default async function SettingsPage() {
 
       <SettingsForm settings={settings} />
       <CarouselImagesForm
-        key={carousel.error ? "unavailable" : "available"}
-        initial={carousel.data ?? []}
-        unavailable={carousel.error
-          ? ["42P01", "PGRST205"].includes(carousel.error.code)
-            ? "El carrusel está pendiente de activación en Supabase. Debe aplicarse la migración home-carousel.sql y después recargar esta página."
-            : "No se pudieron cargar las fotografías. Comprueba la conexión y los permisos, y recarga esta página antes de subir o guardar imágenes."
-          : !carousel.data ? "No se pudieron cargar las fotografías. Recarga esta página para reintentar." : undefined}
+        key={carouselError ? "unavailable" : "available"}
+        initial={carouselImages}
+        initialRevision={carouselRevision}
+        unavailable={carouselError}
       />
       {hero?.data && !hero.error ? <HeroImageForm
         key={`${hero.data.id}:${hero.data.hero_image}`} id={hero.data.id} image={hero.data.hero_image}

@@ -3,6 +3,10 @@ import { safeImage } from "./products/images";
 export const MAX_CAROUSEL_IMAGES = 10;
 export type CarouselImage = { id: string; image_url: string; active: boolean };
 
+export function isCarouselRevision(value: unknown): value is string {
+  return typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
 // Match the existing uploader: unique filename at the product-images bucket root.
 export function carouselImageUrl(value: unknown): value is string {
   return typeof value === "string" && value.length <= 2048 && Boolean(safeImage(value)) &&
